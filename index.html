@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Quản Lý Seal Định Vị</title>
+    <style>
+        /* --- RESET & BASIC SETUP --- */
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-sidebar: #111827;
+            --bg-sidebar-header: #1f2937;
+            --text-sidebar: #9ca3af;
+            --text-sidebar-hover: #ffffff;
+            
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            
+            --text-main: #4b5563;
+            --text-dark: #111827;
+            --border: #e5e7eb;
+            --white: #ffffff;
+            
+            --success: #10b981;
+            --success-bg: #dcfce7;
+            --success-text: #15803d;
+            
+            --danger: #ef4444;
+            --danger-bg: #fee2e2;
+            --danger-text: #b91c1c;
+            
+            --warning: #f59e0b;
+            --warning-bg: #fef3c7;
+            --warning-text: #b45309;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-main); overflow: hidden; font-size: 14px; line-height: 1.5; }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background-color: var(--bg-sidebar); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; transition: all 0.3s; z-index: 50;}
+        .sidebar-header { padding: 24px 20px; background-color: var(--bg-sidebar-header); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-header h1 { font-size: 16px; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.3;}
+        .sidebar-header span { font-size: 12px; color: #60a5fa; font-weight: 500; text-transform: uppercase;}
+        .nav-menu { padding: 20px 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto;}
+        
+        .nav-item { 
+            display: flex; align-items: center; padding: 12px 16px; color: var(--text-sidebar); 
+            text-decoration: none; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s ease;
+            font-size: 14px; font-weight: 500;
+        }
+        .nav-item svg { margin-right: 14px; transition: transform 0.2s; }
+        .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-sidebar-hover); }
+        .nav-item:hover svg { transform: scale(1.1); }
+        .nav-item.active { background-color: var(--primary); color: var(--white); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); font-weight: 600;}
+        
+        .sidebar-footer { padding: 16px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg-sidebar-header);}
+
+        /* --- MAIN CONTENT --- */
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .header { background: var(--white); padding: 16px 28px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center; z-index: 10; border-bottom: 1px solid var(--border);}
+        .header h2 { font-size: 18px; color: var(--text-dark); font-weight: 700; letter-spacing: -0.5px;}
+        .user-info { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; color: var(--text-dark);}
+        .avatar { width: 36px; height: 36px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; border: 1px solid #bfdbfe;}
+        
+        .content-area { flex: 1; padding: 28px; overflow-y: auto; scroll-behavior: smooth;}
+        .page-title { font-size: 24px; font-weight: 700; color: var(--text-dark); margin-bottom: 24px; letter-spacing: -0.5px;}
+
+        /* --- COMPONENTS --- */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 28px; }
+        .stat-card { padding: 24px; border-radius: var(--radius-lg); color: white; box-shadow: var(--shadow-md); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center;}
+        .stat-card.blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .stat-card.green { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
+        .stat-card.orange { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); }
+        .stat-title { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.9; margin-bottom: 8px; font-weight: 600; z-index: 1;}
+        .stat-value { font-size: 42px; font-weight: 800; line-height: 1; z-index: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .stat-card::after { content: ''; position: absolute; right: -20px; top: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;}
+
+        .alert-box { background-color: var(--warning-bg); border: 1px solid #fde68a; border-left: 5px solid var(--warning); padding: 18px 20px; border-radius: var(--radius-md); margin-bottom: 28px; display: flex; gap: 16px; box-shadow: var(--shadow-sm);}
+        .alert-box h3 { font-size: 15px; color: var(--warning-text); margin-bottom: 8px; font-weight: 700;}
+        .alert-box p { font-size: 14px; color: #92400e; margin-bottom: 6px; line-height: 1.6; }
+        
+        .card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); border: 1px solid var(--border); margin-bottom: 28px; overflow: visible;}
+        .card-header { background: var(--white); padding: 18px 24px; font-weight: 700; border-bottom: 1px solid var(--border); color: var(--text-dark); font-size: 16px; border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);}
+        .card-body { padding: 24px; }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); transition: all 0.2s;}
+        .list-item:hover { background-color: var(--bg-body); border-color: #cbd5e1; transform: translateY(-1px); box-shadow: var(--shadow-sm);}
+        
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;}
+        .badge.active { background: var(--primary-light); color: var(--primary-hover); border: 1px solid #bfdbfe;}
+        .badge.inactive { background: #f3f4f6; color: #9ca3af; }
+        .badge.status { background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0;}
+        .badge.warning { background: var(--warning-bg); color: var(--warning-text); border: 1px solid #fde68a;}
+        .badge.danger { background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca;}
+
+        /* --- TABLE --- */
+        .table-container { width: 100%; overflow-x: auto; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg);}
+        table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+        th { background: #f8fafc; padding: 16px 20px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #64748b; border-bottom: 2px solid var(--border); white-space: nowrap; position: sticky; top: 0; z-index: 10; letter-spacing: 0.5px;}
+        td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-dark); vertical-align: middle;}
+        tbody tr:nth-child(even) { background-color: #f8fafc; }
+        tbody tr:hover { background-color: var(--primary-light); }
+        .table-container::-webkit-scrollbar { height: 8px; width: 8px;}
+        .table-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px;}
+        .table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .table-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- FORM --- */
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark); }
+        select, input, textarea { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: var(--radius-md); font-size: 14px; outline: none; transition: all 0.2s; background: var(--white); color: var(--text-dark); box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);}
+        select:focus, input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+        select:hover, input:hover, textarea:hover { border-color: #9ca3af; }
+        textarea { resize: vertical; min-height: 80px; font-family: system-ui, sans-serif; line-height: 1.5;}
+
+        /* --- BUTTONS --- */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-sm);}
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md);}
+        .btn:active { transform: translateY(0); box-shadow: none;}
+        .btn-secondary { background: var(--white); color: var(--text-main); border: 1px solid var(--border); box-shadow: var(--shadow-sm);}
+        .btn-secondary:hover { background: #f8fafc; color: var(--text-dark); border-color: #cbd5e1;}
+
+        .msg { padding: 16px; border-radius: var(--radius-md); font-size: 14px; margin-bottom: 20px; display: none; font-weight: 500; display: flex; align-items: center; gap: 10px;}
+        .msg.error { display: flex; background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca; }
+        .msg.success { display: flex; background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
+
+        .action-btn { padding: 6px 12px; border: 1px solid transparent; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center;}
+        .action-btn.edit { background: var(--primary-light); color: var(--primary-hover); border-color: #bfdbfe;}
+        .action-btn.edit:hover { background: #dbeafe; }
+        .action-btn.delete { background: var(--danger-bg); color: var(--danger-text); border-color: #fecaca;}
+        .action-btn.delete:hover { background: #fee2e2; }
+
+        /* --- GỢI Ý MÃ SEAL --- */
+        .suggestions-box { position: absolute; background: white; border: 1px solid var(--border); border-radius: var(--radius-md); max-height: 200px; overflow-y: auto; width: calc(100% - 2px); z-index: 50; box-shadow: var(--shadow-md); display: none; margin-top: 4px; left: 1px;}
+        .suggestion-item { padding: 10px 16px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f3f4f6; color: var(--text-dark); font-family: monospace; font-weight: 500;}
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: var(--primary-light); color: var(--primary-hover); padding-left: 20px; transition: padding 0.2s;}
+        .suggestion-item .asset-code { font-size: 12px; color: #64748b; margin-left: 8px; font-family: system-ui, sans-serif;}
+
+        /* --- MODAL --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; opacity: 0; animation: fadeIn 0.2s forwards;}
+        @keyframes fadeIn { to { opacity: 1; } }
+        .modal-content { background: white; padding: 28px; border-radius: var(--radius-lg); width: 90%; max-width: 480px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); transform: scale(0.95); animation: scaleUp 0.2s forwards;}
+        @keyframes scaleUp { to { transform: scale(1); } }
+        .modal-content h3 { margin-bottom: 20px; color: var(--text-dark); font-size: 20px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 12px;}
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+        
+        /* --- FOOTER CHUYÊN NGHIỆP --- */
+        .app-footer {
+            background: var(--white);
+            padding: 14px 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #6b7280;
+            z-index: 10;
+        }
+        .app-footer strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* --- RESPONSIVE --- */
+        .menu-toggle { display: none; background: none; border: none; color: var(--text-dark); cursor: pointer; padding-right: 12px; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; backdrop-filter: blur(2px);}
+        
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 50; }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay.open { display: block; }
+            .header { padding: 12px 20px; justify-content: flex-start; gap: 12px; }
+            .header h2 { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 10px;}
+            .user-info { display: none; }
+            .content-area { padding: 16px; }
+            .grid-3 { gap: 16px; margin-bottom: 20px;}
+            .stat-card { padding: 20px; }
+            .alert-box { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px;}
+            .table-container { border-radius: 0;}
+            table { min-width: 700px; }
+            .btn { width: 100%; }
+            
+            /* Responsive cho Footer */
+            .app-footer {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+                padding: 16px;
+            }
+            .footer-right {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h5>CHI CỤC HẢI QUAN KHU VỰC II</h5>
+            <span><H3>HẢI QUAN CỬA KHẨU <BR>CẢNG SÀI GÒN KHU VỰC 4</H3></span>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                Bảng Điều Khiển
+            </div>
+            <div class="nav-item" onclick="switchTab('list')" id="nav-list">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                Danh Sách Seal
+            </div>
+            <div class="nav-item" onclick="switchTab('transfer')" id="nav-transfer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                Điều Chuyển & Bàn Giao
+            </div>
+            <div class="nav-item" onclick="switchTab('history')" id="nav-history">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Lịch Sử Bàn Giao
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            Hệ thống Quản lý Tài sản v3.5<br>Phiên bản Nội bộ (Offline)
+        </div>
+    </div>
+
+    <!-- OVERLAY CHO MOBILE -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <div class="header">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <h2>Hệ Thống Quản Lý Seal Định Vị Điện Tử</h2>
+            </div>
+            <div class="user-info">
+                <div class="avatar">HQ</div>
+                Admin_CangSG
+            </div>
+        </div>
+        
+        <div class="content-area" id="app-content">
+            <!-- Render by JS -->
+        </div>
+
+        <!-- FOOTER CHUYÊN NGHIỆP THÊM MỚI -->
+        <div class="app-footer">
+            <div>&copy; 2026. All rights reserved ✪ Designed by <strong>Trần Duy Trung |  KV02-HQ10-0032</strong></div>
+            <div class="footer-right">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Hệ thống Lưu trữ Cục bộ v8.0
+                </span>
+                <span style="color: #d1d5db;">|</span>
+                <span style="color: #9ca3af;">Phát triển nội bộ</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CỬA SỔ MODAL -->
+    <div id="appModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modalTitle">Tiêu đề</h3>
+            <div id="modalBody">Nội dung</div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn" id="modalConfirmBtn" onclick="executeModalAction()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const LOCATIONS = [
+            'Bộ phận Thủ tục HHXNK',
+            'Kho ngoại quan Transimex', 'KHO CFS PHƯỚC LONG 3', 'KHO TRANSIMEX',
+            'ICD PHƯỚC LONG 1', 'ICD PHƯỚC LONG 3', 'ICD SOTRANS', 'ICD TANAMEXCO', 'ICD TRANSIMEX', 'ICD TÂY NAM'
+        ];
+        const ICD_LOCATIONS = ['ICD PHƯỚC LONG 1', 'ICD PHƯỚC LONG 3', 'ICD SOTRANS', 'ICD TANAMEXCO', 'ICD TRANSIMEX', 'ICD TÂY NAM'];
+
+        let seals = [];
+        let transactions = [];
+        let activeTab = 'dashboard';
+
+        const RAW_SEAL_DATA = `1 | HCM811 | KHO CFS PHƯỚC LONG 3 | 000902885 | 2020
+2 | HCM812 | KHO CFS PHƯỚC LONG 3 | 000902883 | 2020
+3 | HCM813 | KHO CFS PHƯỚC LONG 3 | 000902922 | 2020
+4 | HCM814 | KHO CFS PHƯỚC LONG 3 | 000902929 | 2020
+5 | HCM815 | KHO CFS PHƯỚC LONG 3 | 000902864 | 2020
+6 | HCM816 | KHO CFS PHƯỚC LONG 3 | 000902891 | 2020
+7 | HCM817 | KHO CFS PHƯỚC LONG 3 | 000902910 | 2020
+8 | HCM818 | KHO CFS PHƯỚC LONG 3 | 000902909 | 2020
+9 | HCM819 | KHO CFS PHƯỚC LONG 3 | 000902895 | 2020
+10 | HCM820 | KHO CFS PHƯỚC LONG 3 | 000902906 | 2020
+11 | HCM821 | KHO TRANSIMEX | 000902907 | 2020
+12 | HCM822 | KHO TRANSIMEX | 000902886 | 2020
+13 | HCM823 | KHO TRANSIMEX | 000902888 | 2020
+14 | HCM824 | ICD PHƯỚC LONG 1 | 000902962 | 2020
+15 | HCM825 | ICD PHƯỚC LONG 1 | 000902887 | 2020
+16 | HCM826 | ICD PHƯỚC LONG 3 | 000902920 | 2020
+17 | HCM827 | ICD PHƯỚC LONG 3 | 000902892 | 2020
+18 | HCM828 | ICD PHƯỚC LONG 3 | 000902916 | 2020
+19 | HCM829 | ICD PHƯỚC LONG 3 | 000902913 | 2020
+20 | HCM830 | ICD PHƯỚC LONG 3 | 000902926 | 2020
+21 | HCM831 | ICD PHƯỚC LONG 3 | 000902897 | 2020
+22 | HCM832 | ICD PHƯỚC LONG 3 | 000902915 | 2020
+23 | HCM833 | ICD PHƯỚC LONG 3 | 000902898 | 2020
+24 | HCM834 | ICD PHƯỚC LONG 3 | 000902931 | 2020
+25 | HCM835 | ICD PHƯỚC LONG 3 | 000902927 | 2020
+26 | HCM836 | ICD PHƯỚC LONG 3 | 000902921 | 2020
+27 | HCM837 | ICD PHƯỚC LONG 3 | 000902903 | 2020
+28 | HCM838 | ICD PHƯỚC LONG 3 | 000902908 | 2020
+29 | HCM839 | ICD PHƯỚC LONG 3 | 000902902 | 2020
+30 | HCM840 | ICD PHƯỚC LONG 3 | 000902901 | 2020
+31 | HCM841 | ICD PHƯỚC LONG 3 | 000968541 | 2020
+32 | HCM842 | ICD PHƯỚC LONG 3 | 000968551 | 2020
+33 | HCM843 | ICD PHƯỚC LONG 3 | 000968599 | 2022
+34 | HCM844 | ICD PHƯỚC LONG 3 | 000968574 | 2022
+35 | HCM845 | ICD PHƯỚC LONG 3 | 000968570 | 2022
+36 | HCM846 | ICD TRANSIMEX | 000968539 | 2022
+37 | HCM847 | ICD TRANSIMEX | 000968572 | 2022
+38 | HCM848 | ICD TRANSIMEX | 000968598 | 2022
+39 | HCM849 | ICD TRANSIMEX | 000968577 | 2022
+40 | HCM850 | ICD TRANSIMEX | 000968580 | 2022
+41 | HCM851 | ICD TRANSIMEX | 000968537 | 2022
+42 | HCM852 | ICD TRANSIMEX | 000968584 | 2022
+43 | HCM853 | ICD TRANSIMEX | 000968578 | 2022
+44 | HCM854 | ICD TRANSIMEX | 000968546 | 2022
+45 | HCM855 | ICD TRANSIMEX | 000968564 | 2022
+46 | HCM856 | KHO TRANSIMEX | 000968559 | 2022
+47 | HCM857 | KHO TRANSIMEX | 000968562 | 2022
+48 | HCM858 | KHO TRANSIMEX | 000968591 | 2022
+49 | HCM859 | KHO TRANSIMEX | 000968566 | 2022
+50 | HCM860 | KHO TRANSIMEX | 000968533 | 2022
+51 | HCM861 | KHO TRANSIMEX | 000968603 | 2022
+52 | HCM862 | KHO TRANSIMEX | 000968592 | 2022
+53 | HCM863 | KHO TRANSIMEX | 000968583 | 2022
+54 | HCM864 | KHO TRANSIMEX | 000968550 | 2022
+55 | HCM865 | KHO TRANSIMEX | 000968563 | 2022
+56 | HCM866 | KHO TRANSIMEX | 000968571 | 2022
+57 | HCM867 | KHO TRANSIMEX | 000968568 | 2022
+58 | HCM868 | KHO TRANSIMEX | 000968540 | 2022
+59 | HCM869 | KHO TRANSIMEX | 000968602 | 2022
+60 | HCM870 | KHO TRANSIMEX | 000968575 | 2022
+61 | HCM871 | KHO TRANSIMEX | 000968573 | 2022
+62 | HCM872 | KHO TRANSIMEX | 000968534 | 2022
+63 | HCM873 | KHO TRANSIMEX | 000968589 | 2022
+64 | HCM874 | KHO TRANSIMEX | 000968558 | 2022
+65 | HCM875 | KHO TRANSIMEX | 000968588 | 2022
+66 | HCM876 | KHO TRANSIMEX | 000968542 | 2022
+67 | HCM877 | KHO TRANSIMEX | 000968576 | 2022
+68 | HCM878 | KHO TRANSIMEX | 000968579 | 2022
+69 | HCM879 | KHO TRANSIMEX | 000968586 | 2022
+70 | HCM880 | KHO TRANSIMEX | 000968565 | 2022
+71 | HCM881 | KHO TRANSIMEX | 000968567 | 2022
+72 | HCM882 | KHO TRANSIMEX | 000968547 | 2022
+73 | HCM883 | KHO TRANSIMEX | 000968544 | 2022
+74 | HCM884 | KHO TRANSIMEX | 000968556 | 2022
+75 | HCM885 | KHO TRANSIMEX | 000968587 | 2022
+76 | HCM886 | ICD PHƯỚC LONG 3 | 000968581 | 2022
+77 | HCM887 | ICD PHƯỚC LONG 3 | 000968535 | 2022
+78 | HCM888 | ICD PHƯỚC LONG 3 | 000968530 | 2022
+79 | HCM889 | ICD PHƯỚC LONG 3 | 000968538 | 2022
+80 | HCM890 | ICD PHƯỚC LONG 3 | 000968553 | 2022
+81 | HCM891 | ICD PHƯỚC LONG 3 | 000968560 | 2022
+82 | HCM892 | ICD PHƯỚC LONG 3 | 000968557 | 2022
+83 | HCM893 | ICD PHƯỚC LONG 3 | 000968531 | 2022
+84 | HCM894 | ICD PHƯỚC LONG 3 | 000968555 | 2022
+85 | HCM895 | ICD PHƯỚC LONG 3 | 000968536 | 2022
+86 | HCM896 | ICD PHƯỚC LONG 3 | 000968552 | 2022
+87 | HCM897 | ICD PHƯỚC LONG 3 | 000968590 | 2022
+88 | HCM898 | ICD PHƯỚC LONG 3 | 000968600 | 2022
+89 | HCM899 | ICD PHƯỚC LONG 3 | 000968561 | 2022
+90 | HCM900 | ICD PHƯỚC LONG 3 | 000968628 | 2022
+91 | HCM001 | ICD TÂY NAM | 000968624 | 2022
+92 | HCM002 | ICD PHƯỚC LONG 3 | 000968618 | 2022
+93 | HCM003 | ICD PHƯỚC LONG 3 | 000968634 | 2022
+94 | HCM004 | ICD TRANSIMEX | 000968633 | 2022
+95 | HCM005 | ICD PHƯỚC LONG 3 | 000968612 | 2022
+96 | HCM006 | ICD TRANSIMEX | 000968615 | 2022
+97 | HCM007 | ICD PHƯỚC LONG 3 | 000968626 | 2022
+98 | HCM008 | ICD SOTRANS | 000968616 | 2022
+99 | HCM009 | KHO TRANSIMEX | 000968632 | 2022
+100 | HCM010 | ICD TRANSIMEX | 000968595 | 2022
+101 | HCM011 | ICD PHƯỚC LONG 3 | 000968593 | 2022
+102 | HCM012 | ICD TÂY NAM | 000968610 | 2022
+103 | HCM013 | ICD PHƯỚC LONG 3 | 000968606 | 2022
+104 | HCM014 | ICD TRANSIMEX | 000968631 | 2022
+105 | HCM015 | ICD PHƯỚC LONG 3 | 000968607 | 2022
+106 | HCM031 | ICD PHƯỚC LONG 3 | 000968617 | 2022
+107 | HCM032 | KHO TRANSIMEX | 000968614 | 2022
+108 | HCM033 | ICD PHƯỚC LONG 3 | 000968605 | 2022
+109 | HCM034 | ICD SOTRANS | 000968594 | 2022
+110 | HCM035 | ICD PHƯỚC LONG 3 | 000968611 | 2022
+111 | HCM036 | ICD PHƯỚC LONG 3 | 000968596 | 2022
+112 | HCM037 | ICD PHƯỚC LONG 3 | 000968554 | 2022
+113 | HCM038 | ICD SOTRANS | 000968582 | 2022
+114 | HCM039 | ICD TÂY NAM | 000968532 | 2022
+115 | HCM040 | ICD PHƯỚC LONG 3 | 000968545 | 2022
+116 | HCM041 | ICD PHƯỚC LONG 3 | 000968569 | 2022
+117 | HCM042 | KHO TRANSIMEX | 000968601 | 2022
+118 | HCM043 | ICD PHƯỚC LONG 3 | 000968529 | 2022
+119 | HCM045 | ICD PHƯỚC LONG 3 | 000968548 | 2022
+120 | HCM046 | ICD TRANSIMEX | 000968585 | 2022
+121 | HCM047 | KHO TRANSIMEX | 000968549 | 2022
+122 | HCM049 | ICD TÂY NAM | 000968543 | 2022
+123 | HCM055 | KHO TRANSIMEX | 000968625 | 2022
+124 | HCM056 | ICD SOTRANS | 000968609 | 2022
+125 | HCM057 | ICD TÂY NAM | 000968622 | 2022
+126 | HCM019 | ICD PHƯỚC LONG 3 | 000968597 | 2022
+127 | HCM023 | ICD PHƯỚC LONG 3 | 000968620 | 2022
+128 | HCM026 | ICD SOTRANS | 000968630 | 2022
+129 | HCM028 | ICD TRANSIMEX | 000968604 | 2022
+130 | HCM030 | ICD TRANSIMEX | 000968627 | 2022
+131 | HCM971 | ICD PHƯỚC LONG 3 | 000968685 | 2022
+132 | HCM972 | ICD PHƯỚC LONG 3 | 000968679 | 2022
+133 | HCM973 | ICD PHƯỚC LONG 3 | 000968686 | 2022
+134 | HCM974 | ICD PHƯỚC LONG 3 | 000968675 | 2022
+135 | HCM975 | ICD PHƯỚC LONG 3 | 000968621 | 2022
+136 | HCM976 | KHO TRANSIMEX | 000968657 | 2022
+137 | HCM977 | KHO TRANSIMEX | 000968619 | 2022
+138 | HCM978 | KHO TRANSIMEX | 000968650 | 2022
+139 | HCM979 | ICD TÂY NAM | 000968674 | 2022
+140 | HCM980 | ICD TÂY NAM | 000968668 | 2022
+141 | HCM044 | Bộ phận Thủ tục HHXNK | 000902889 | 2020
+142 | HCM048 | Bộ phận Thủ tục HHXNK | 000902899 | 2020
+143 | HCM050 | Bộ phận Thủ tục HHXNK | 000902896 | 2020
+144 | HCM051 | Bộ phận Thủ tục HHXNK | 000902924 | 2020
+145 | HCM052 | Bộ phận Thủ tục HHXNK | 000902923 | 2020
+146 | HCM053 | Bộ phận Thủ tục HHXNK | 000902884 | 2020
+147 | HCM054 | Bộ phận Thủ tục HHXNK | 000902893 | 2020
+148 | HCM058 | Bộ phận Thủ tục HHXNK | 000902900 | 2020
+149 | HCM059 | Bộ phận Thủ tục HHXNK | 000902904 | 2020
+150 | HCM060 | Bộ phận Thủ tục HHXNK | 000902919 | 2020
+151 | HCM801 | Bộ phận Thủ tục HHXNK | 000902890 | 2020
+152 | HCM802 | Bộ phận Thủ tục HHXNK | 000902911 | 2020
+153 | HCM803 | Bộ phận Thủ tục HHXNK | 000902894 | 2020
+154 | HCM804 | Bộ phận Thủ tục HHXNK | 000902928 | 2020
+155 | HCM805 | Bộ phận Thủ tục HHXNK | 000902930 | 2020
+156 | HCM806 | Bộ phận Thủ tục HHXNK | 000902905 | 2020
+157 | HCM807 | Bộ phận Thủ tục HHXNK | 000902918 | 2020
+158 | HCM808 | Bộ phận Thủ tục HHXNK | 000902917 | 2020
+159 | HCM809 | Bộ phận Thủ tục HHXNK | 000902932 | 2020
+160 | HCM810 | Bộ phận Thủ tục HHXNK | 000902925 | 2020`;
+
+        function saveData() {
+            try {
+                localStorage.setItem('sealData_v8', JSON.stringify(seals));
+                localStorage.setItem('txnData_v8', JSON.stringify(transactions));
+            } catch (error) {
+                console.warn("Cảnh báo: Không thể lưu bộ nhớ", error);
+            }
+        }
+
+        function initData() {
+            let savedSeals = null;
+            let savedTxns = null;
+            
+            try {
+                savedSeals = localStorage.getItem('sealData_v8');
+                savedTxns = localStorage.getItem('txnData_v8');
+            } catch (error) {
+                console.warn("Cảnh báo: Không thể đọc bộ nhớ", error);
+            }
+
+            if (savedSeals && savedSeals !== '[]') {
+                seals = JSON.parse(savedSeals);
+                transactions = savedTxns ? JSON.parse(savedTxns) : [];
+            } else {
+                seals = [];
+                const lines = RAW_SEAL_DATA.trim().split('\n');
+                
+                lines.forEach(line => {
+                    const parts = line.split('|').map(p => p.trim());
+                    if (parts.length >= 5) {
+                        seals.push({
+                            id: parts[1],           
+                            assetCode: parts[3],    
+                            location: parts[2],     
+                            year: parts[4],         
+                            status: 'Sẵn sàng',
+                            details: ''
+                        });
+                    }
+                });
+
+                transactions = [];
+                saveData();
+            }
+        }
+
+        function getStats() {
+            const counts = {};
+            LOCATIONS.forEach(loc => counts[loc] = 0);
+            seals.forEach(seal => { 
+                if (counts[seal.location] !== undefined) counts[seal.location]++; 
+            });
+            return counts;
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebar-overlay').classList.toggle('open');
+        }
+
+        function switchTab(tabId) {
+            activeTab = tabId;
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('nav-' + tabId).classList.add('active');
+            
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(sidebar) sidebar.classList.remove('open');
+            if(overlay) overlay.classList.remove('open');
+            
+            renderContent();
+        }
+
+        function renderContent() {
+            const container = document.getElementById('app-content');
+            if (activeTab === 'dashboard') container.innerHTML = renderDashboard();
+            else if (activeTab === 'list') container.innerHTML = renderList();
+            else if (activeTab === 'transfer') container.innerHTML = renderTransfer();
+            else if (activeTab === 'history') container.innerHTML = renderHistory();
+        }
+
+        function renderDashboard() {
+            const stats = getStats();
+            let locationHtml = '';
+            for (const [loc, count] of Object.entries(stats)) {
+                const badgeClass = count > 0 ? 'active' : 'inactive';
+                locationHtml += `
+                    <div class="list-item" style="cursor: pointer;" onclick="viewLocation('${loc}')" title="Nhấn để xem danh sách">
+                        <span style="font-weight: 500;">${loc}</span>
+                        <span class="badge ${badgeClass}">${count}</span>
+                    </div>
+                `;
+            }
+
+            return `
+                <h1 class="page-title">Tổng quan Tình hình Seal</h1>
+                <div class="grid-3">
+                    <div class="stat-card blue">
+                        <div class="stat-title">Tổng số Seal quản lý</div>
+                        <div class="stat-value">${seals.length}</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-title">Tại các ICD / Kho</div>
+                        <div class="stat-value">${seals.length - (stats['Bộ phận Thủ tục HHXNK'] || 0)}</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-title">Tại Bộ phận Thủ tục</div>
+                        <div class="stat-value">${stats['Bộ phận Thủ tục HHXNK'] || 0}</div>
+                    </div>
+                </div>
+                <div class="alert-box">
+                    <div style="flex-shrink: 0; padding-top: 2px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--warning);"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <h3>Nhiệm vụ cần thực hiện (Theo chỉ đạo Lãnh đạo Đội):</h3>
+                        <p>1. Bàn giao từ <strong>Thủ tục HHXNK</strong> sang <strong>Kho CFS Phước Long 3</strong>.</p>
+                        <p>2. Bàn giao từ <strong>Kho bãi cổng Transimex</strong> sang <strong>Kho ngoại quan Transimex</strong>.</p>
+                        <p style="color: #b91c1c; font-weight: 700; margin-top: 10px;">LƯU Ý QUAN TRỌNG: Các ICD (Phước Long 1, Sotrans, Tanamexco) chỉ được giữ tối đa 2 seal dự phòng.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">Phân bổ hiện tại chi tiết</div>
+                    <div class="card-body grid-2">${locationHtml}</div>
+                </div>
+            `;
+        }
+
+        function renderList() {
+            let rowsHtml = '';
+            seals.forEach(seal => {
+                let statusClass = 'status';
+                if (seal.status === 'Đang sử dụng') statusClass = 'active';
+                if (seal.status === 'Hỏng/Lỗi') statusClass = 'warning';
+                if (seal.status === 'Mất') statusClass = 'danger';
+
+                rowsHtml += `
+                    <tr data-details="${seal.details || ''}">
+                        <td><strong style="color: var(--primary);">${seal.id}</strong></td>
+                        <td style="color: #4b5563; font-family: monospace; font-size: 13px;">${seal.assetCode || '<em style="color:#9ca3af;">Chưa cập nhật</em>'}</td>
+                        <td style="font-weight: 500;">${seal.location}</td>
+                        <td><span class="badge ${statusClass}">${seal.status || 'Sẵn sàng'}</span></td>
+                        <td style="color: #4b5563; font-weight: 600;">${seal.year || '<em style="color:#9ca3af; font-weight: normal;">-</em>'}</td>
+                        <td><button class="action-btn edit" onclick="openEditModal('${seal.id}')">Cập nhật</button></td>
+                    </tr>
+                `;
+            });
+
+            return `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+                    <h1 class="page-title" style="margin-bottom: 0;">Danh sách Seal Định Vị</h1>
+                    <button class="btn btn-secondary" onclick="switchTab('dashboard')">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        Quay lại trang chủ
+                    </button>
+                </div>
+                
+                <div class="card" style="margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none;">
+                    <div class="card-body" style="padding-bottom: 16px;">
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <div style="position: relative; flex: 1; min-width: 250px;">
+                                <div style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                </div>
+                                <input type="text" id="searchInput" placeholder="Nhập mã seal, vị trí, năm trang cấp, trạng thái hoặc ghi chú..." onkeyup="filterSeals()" style="padding-left: 42px; padding-right: 90px;" />
+                                <button id="clearSearchBtn" onclick="clearSearch()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--danger-bg); color: var(--danger-text); border: none; border-radius: 4px; padding: 4px 8px; font-size: 12px; font-weight: bold; cursor: pointer; display: none;">
+                                    Xóa lọc ✖
+                                </button>
+                            </div>
+                            <div id="searchCounter" style="background: var(--primary-light); color: var(--primary-hover); padding: 10px 16px; border-radius: var(--radius-md); font-size: 14px; font-weight: 700; border: 1px solid #bfdbfe;">
+                                Hiển thị: ${seals.length} seal
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card table-container" style="border-top-left-radius: 0; border-top-right-radius: 0; border-top: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã Seal</th>
+                                <th>Mã Tài Sản</th>
+                                <th>Vị trí hiện tại</th>
+                                <th>Trạng thái</th>
+                                <th>Năm TC</th>
+                                <th>Tác vụ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sealTableBody">${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderTransfer() {
+            const stats = getStats();
+            let optionsHtml = '<option value="">-- Chọn đơn vị --</option>';
+            LOCATIONS.forEach(loc => { optionsHtml += `<option value="${loc}">${loc} (Hiện có: ${stats[loc]})</option>`; });
+            return `
+                <h1 class="page-title">Nghiệp Vụ Điều Chuyển / Bàn Giao</h1>
+                <div class="card" style="max-width: 850px; margin: 0 auto;">
+                    <div class="card-body" style="padding: 32px;">
+                        <div id="transfer-msg" class="msg" style="display: none;"></div>
+                        
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Nơi giao (Từ)</label>
+                                <select id="form-from">${optionsHtml}</select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nơi nhận (Đến)</label>
+                                <select id="form-to">${optionsHtml.replace(/ \(Hiện có: \d+\)/g, '')}</select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="position: relative;">
+                            <label>Mã Seal cần chuyển <span style="font-weight: normal; color: #6b7280;">(Gõ để tìm kiếm, hoặc dán nhiều mã cách nhau bởi dấu phẩy)</span></label>
+                            <textarea id="form-seal-ids" placeholder="Ví dụ: HCM811, HCM812..." oninput="handleSealInput()"></textarea>
+                            <div id="seal-suggestions" class="suggestions-box"></div>
+                            <div style="font-size: 13px; color: var(--primary); margin-top: 8px; font-weight: 600;">Tổng số lượng hợp lệ: <span id="auto-qty" style="font-size: 15px;">0</span> seal</div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Họ tên cán bộ nhận <span style="font-weight: normal; color: #6b7280;">(Ký nhận số hóa)</span></label>
+                            <input type="text" id="form-receiver" placeholder="Nhập tên người tiếp nhận tài sản...">
+                        </div>
+                        
+                        <div style="text-align: right; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 24px;">
+                            <button class="btn" onclick="executeTransfer()" style="padding: 14px 28px; font-size: 15px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                                Thực hiện Bàn giao
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateTransferQty() {
+            const text = document.getElementById('form-seal-ids').value;
+            const uniqueIds = [...new Set(text.split(/[\n,;]+/).map(id => id.trim()).filter(id => id !== ''))];
+            const counter = document.getElementById('auto-qty');
+            if(counter) counter.innerText = uniqueIds.length;
+        }
+
+        function handleSealInput() {
+            updateTransferQty();
+            const from = document.getElementById('form-from').value;
+            const textarea = document.getElementById('form-seal-ids');
+            const suggestionsBox = document.getElementById('seal-suggestions');
+            
+            if (!from) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            const text = textarea.value;
+            const parts = text.split(/[\n,;]+/);
+            const currentTerm = parts[parts.length - 1].trim().toLowerCase();
+
+            if (currentTerm.length < 1) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            const matchedSeals = seals.filter(s => 
+                s.location === from && 
+                (s.id.toLowerCase().includes(currentTerm) || (s.assetCode && s.assetCode.toLowerCase().includes(currentTerm)))
+            );
+
+            if (matchedSeals.length === 0) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            let html = '';
+            matchedSeals.slice(0, 15).forEach(s => {
+                const assetStr = s.assetCode ? `<span class="asset-code">Mã TS: ${s.assetCode}</span>` : '';
+                html += `<div class="suggestion-item" onclick="selectSuggestion('${s.id}')">${s.id} ${assetStr}</div>`;
+            });
+
+            suggestionsBox.innerHTML = html;
+            suggestionsBox.style.display = 'block';
+        }
+
+        function selectSuggestion(sealId) {
+            const textarea = document.getElementById('form-seal-ids');
+            const text = textarea.value;
+            
+            const lastComma = text.lastIndexOf(',');
+            const lastSemicolon = text.lastIndexOf(';');
+            const lastNewline = text.lastIndexOf('\n');
+            const lastIndex = Math.max(lastComma, lastSemicolon, lastNewline);
+            
+            let newText = '';
+            if (lastIndex !== -1) {
+                let prefix = text.substring(0, lastIndex + 1);
+                if (!prefix.endsWith(' ') && !prefix.endsWith('\n')) prefix += ' ';
+                newText = prefix + sealId + ', ';
+            } else {
+                newText = sealId + ', ';
+            }
+            
+            textarea.value = newText;
+            document.getElementById('seal-suggestions').style.display = 'none';
+            updateTransferQty();
+            textarea.focus();
+        }
+
+        document.addEventListener('click', function(e) {
+            const box = document.getElementById('seal-suggestions');
+            if (box && e.target.id !== 'form-seal-ids') box.style.display = 'none';
+        });
+
+        function executeTransfer() {
+            const msgEl = document.getElementById('transfer-msg');
+            msgEl.className = 'msg'; 
+            msgEl.innerHTML = '';
+            
+            const from = document.getElementById('form-from').value;
+            const to = document.getElementById('form-to').value;
+            const sealIdsText = document.getElementById('form-seal-ids').value.trim();
+            const receiver = document.getElementById('form-receiver').value.trim();
+
+            const iconError = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+            const iconSuccess = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+
+            if (!from || !to || !sealIdsText || !receiver) { 
+                msgEl.innerHTML = iconError + '<span>Vui lòng điền đầy đủ thông tin (Từ, Đến, Mã Seal, Người nhận).</span>'; 
+                msgEl.classList.add('error'); 
+                msgEl.style.display = 'flex';
+                return; 
+            }
+            if (from === to) { 
+                msgEl.innerHTML = iconError + '<span>Nơi giao và nơi nhận không được trùng nhau.</span>'; 
+                msgEl.classList.add('error'); 
+                msgEl.style.display = 'flex';
+                return; 
+            }
+
+            const inputIds = sealIdsText.split(/[\n,;]+/).map(id => id.trim()).filter(id => id !== '');
+            const uniqueInputIds = [...new Set(inputIds)];
+            const qty = uniqueInputIds.length;
+
+            if (qty === 0) {
+                msgEl.innerHTML = iconError + '<span>Vui lòng nhập ít nhất một Mã Seal hợp lệ.</span>';
+                msgEl.classList.add('error');
+                msgEl.style.display = 'flex';
+                return;
+            }
+
+            let notFoundSeals = [];
+            let wrongLocationSeals = [];
+            let sealsToMove = [];
+
+            uniqueInputIds.forEach(inputId => {
+                const seal = seals.find(s => s.id.toLowerCase() === inputId.toLowerCase());
+                if (!seal) {
+                    notFoundSeals.push(inputId);
+                } else if (seal.location !== from) {
+                    wrongLocationSeals.push(`${inputId} (Đang ở: ${seal.location})`);
+                } else {
+                    sealsToMove.push(seal);
+                }
+            });
+
+            if (notFoundSeals.length > 0) {
+                msgEl.innerHTML = iconError + `<span>Không tìm thấy các mã Seal: <b>${notFoundSeals.join(', ')}</b></span>`;
+                msgEl.classList.add('error');
+                msgEl.style.display = 'flex';
+                return;
+            }
+
+            if (wrongLocationSeals.length > 0) {
+                msgEl.innerHTML = iconError + `<span>Các Seal sau không nằm ở "${from}": <b>${wrongLocationSeals.join('; ')}</b></span>`;
+                msgEl.classList.add('error');
+                msgEl.style.display = 'flex';
+                return;
+            }
+
+            if (ICD_LOCATIONS.includes(to)) {
+                const currentDestCount = getStats()[to] || 0;
+                if (currentDestCount + qty > 2) {
+                    msgEl.innerHTML = iconError + `<span><b>LỖI QUY ĐỊNH:</b> ${to} hiện có ${currentDestCount} seal. Tối đa chỉ được giữ 2 seal dự phòng.</span>`;
+                    msgEl.classList.add('error'); 
+                    msgEl.style.display = 'flex';
+                    return;
+                }
+            }
+
+            const exactSealIds = sealsToMove.map(s => s.id);
+            seals.forEach(seal => { if (exactSealIds.includes(seal.id)) seal.location = to; });
+
+            const now = new Date();
+            const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+            transactions.unshift({ id: 'TXN-' + Date.now(), time: timeStr, from, to, qty, receiver, details: exactSealIds.join(', ') });
+
+            saveData(); 
+            
+            msgEl.innerHTML = iconSuccess + `<span>Đã lập biên bản bàn giao thành công <b>${qty} seal</b> từ <b>${from}</b> đến <b>${to}</b>.</span>`;
+            msgEl.classList.add('success');
+            msgEl.style.display = 'flex';
+            
+            document.getElementById('form-seal-ids').value = '';
+            document.getElementById('auto-qty').innerText = '0';
+            document.getElementById('form-receiver').value = '';
+            
+            const newStats = getStats();
+            const fromSelect = document.getElementById('form-from');
+            Array.from(fromSelect.options).forEach(opt => { if(opt.value) opt.text = `${opt.value} (Hiện có: ${newStats[opt.value]})`; });
+        }
+
+        function renderHistory() {
+            if (transactions.length === 0) return `<h1 class="page-title">Lịch Sử Bàn Giao</h1><div class="card card-body" style="text-align: center; padding: 60px; color: #6b7280; font-size: 15px;">Chưa có biên bản bàn giao nào được thực hiện trong hệ thống.</div>`;
+            
+            let rowsHtml = '';
+            transactions.forEach(txn => {
+                rowsHtml += `
+                    <tr>
+                        <td style="color: #6b7280; font-size: 13px;">${txn.time}</td>
+                        <td style="color: var(--danger-text); font-weight: 600;">${txn.from}</td>
+                        <td style="color: var(--success-text); font-weight: 600;">${txn.to}</td>
+                        <td style="text-align: center; font-weight: 800; font-size: 16px;">${txn.qty}</td>
+                        <td style="font-weight: 500;">${txn.receiver}</td>
+                        <td style="font-size: 12px; color: #6b7280; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace;" title="${txn.details}">${txn.details}</td>
+                        <td><button class="action-btn delete" onclick="openDeleteModal('${txn.id}')">Xóa & Hoàn tác</button></td>
+                    </tr>
+                `;
+            });
+
+            return `<h1 class="page-title">Lịch Sử Giao Dịch & Biên Bản Bàn Giao</h1><div class="card table-container"><table><thead><tr><th>Thời gian</th><th>Bên Giao</th><th>Bên Nhận</th><th style="text-align: center;">Số lượng</th><th>Người nhận ký</th><th>Chi tiết Mã Seal</th><th>Tác vụ</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+        }
+
+        function filterSeals() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#sealTableBody tr');
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const text = (row.innerText + ' ' + (row.getAttribute('data-details') || '')).toLowerCase();
+                if (text.includes(query)) { row.style.display = ''; visibleCount++; } 
+                else { row.style.display = 'none'; }
+            });
+            const counter = document.getElementById('searchCounter');
+            if (counter) counter.innerText = 'Hiển thị: ' + visibleCount + ' seal';
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (clearBtn) clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) { searchInput.value = ''; filterSeals(); searchInput.focus(); }
+        }
+
+        function viewLocation(loc) {
+            switchTab('list');
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) { searchInput.value = loc; filterSeals(); }
+        }
+
+        let currentModalAction = null;
+        function showModal(title, bodyHtml, confirmAction, isDanger = false) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerHTML = bodyHtml;
+            currentModalAction = confirmAction;
+            
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            if (isDanger) {
+                confirmBtn.style.background = 'var(--danger)';
+                confirmBtn.style.color = 'white';
+            } else {
+                confirmBtn.style.background = 'var(--primary)';
+                confirmBtn.style.color = 'white';
+            }
+            document.getElementById('appModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('appModal').style.display = 'none';
+            currentModalAction = null;
+        }
+
+        function executeModalAction() { if (currentModalAction) currentModalAction(); }
+
+        function openEditModal(oldId) {
+            const seal = seals.find(s => s.id === oldId);
+            const body = `
+                <div class="form-group" style="margin-bottom: 12px;"><label>Mã Seal:</label><input type="text" id="newSealIdInput" value="${oldId}" /></div>
+                <div class="form-group" style="margin-bottom: 12px;"><label>Mã Tài Sản:</label><input type="text" id="newAssetCodeInput" value="${seal.assetCode || ''}" placeholder="Nhập mã tài sản (nếu có)..."/></div>
+                <div class="grid-2" style="margin-bottom: 12px;">
+                    <div class="form-group" style="margin-bottom: 0;"><label>Năm trang cấp:</label><input type="text" id="newYearInput" value="${seal.year || ''}" placeholder="VD: 2020..."/></div>
+                    <div class="form-group" style="margin-bottom: 0;"><label>Trạng thái:</label>
+                        <select id="newStatusInput">
+                            <option value="Sẵn sàng" ${seal.status === 'Sẵn sàng' || !seal.status ? 'selected' : ''}>Sẵn sàng</option>
+                            <option value="Đang sử dụng" ${seal.status === 'Đang sử dụng' ? 'selected' : ''}>Đang sử dụng</option>
+                            <option value="Hỏng/Lỗi" ${seal.status === 'Hỏng/Lỗi' ? 'selected' : ''}>Hỏng/Lỗi</option>
+                            <option value="Mất" ${seal.status === 'Mất' ? 'selected' : ''}>Mất</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;"><label>Ghi chú:</label><textarea id="newDetailsInput" placeholder="Nhập thông tin cập nhật, tình trạng kiểm tra...">${seal.details || ''}</textarea>
+                <div id="modalError" style="color:var(--danger-text); font-size:13px; margin-top:8px; font-weight:500;"></div></div>
+            `;
+            showModal('Cập nhật Thông tin & Trạng thái', body, () => {
+                const newId = document.getElementById('newSealIdInput').value.trim();
+                if(!newId) { document.getElementById('modalError').innerText = 'Mã Seal không được để trống!'; return; }
+                if(newId !== oldId && seals.find(s => s.id === newId)) { document.getElementById('modalError').innerText = 'Mã Seal này đã tồn tại trong hệ thống!'; return; }
+                
+                if (seal) {
+                    seal.id = newId; 
+                    seal.assetCode = document.getElementById('newAssetCodeInput').value.trim();
+                    seal.year = document.getElementById('newYearInput').value.trim();
+                    seal.status = document.getElementById('newStatusInput').value;
+                    seal.details = document.getElementById('newDetailsInput').value.trim();
+                }
+                
+                transactions.forEach(t => { t.details = t.details.split(', ').map(id => id === oldId ? newId : id).join(', '); });
+                saveData(); closeModal(); renderContent(); 
+            });
+        }
+
+        function openDeleteModal(txnId) {
+            const txn = transactions.find(t => t.id === txnId);
+            if(!txn) return;
+            const body = `
+                <p style="font-size: 15px; margin-bottom: 12px; color: var(--text-dark);">Bạn có chắc chắn muốn xóa biên bản bàn giao này không?</p>
+                <div style="background: var(--danger-bg); padding: 16px; border-radius: var(--radius-md); font-size: 14px; color: var(--danger-text); border: 1px solid #fecaca; line-height: 1.5;">
+                    <strong>Hệ thống sẽ hoàn tác:</strong><br> ${txn.qty} chiếc seal sẽ được tự động hoàn trả về bộ phận gốc ban đầu là <b>${txn.from}</b>.
+                </div>
+            `;
+            showModal('Xác nhận Xóa & Hoàn tác', body, () => {
+                const ids = txn.details.split(', ');
+                seals.forEach(s => { if (ids.includes(s.id)) s.location = txn.from; });
+                transactions = transactions.filter(t => t.id !== txnId);
+                saveData(); closeModal(); renderContent();
+            }, true);
+        }
+
+        window.onload = () => { initData(); renderContent(); };
+    </script>
+</body>
+</html>
