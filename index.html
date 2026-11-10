@@ -4,24 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hệ Thống Quản Lý Seal Định Vị</title>
-    <!-- Biểu tượng cho iPhone/iPad -->
+    
+    <!-- Biểu tượng cho iPhone/iPad (iOS) -->
     <link rel="apple-touch-icon" sizes="512x512" href="sealdv.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="sealdv.png">
     
     <!-- Biểu tượng cho Android & Favicon trình duyệt -->
     <link rel="icon" type="image/png" sizes="192x192" href="sealdv.png">
-    <!-- Dành cho iOS (iPhone/iPad) -->
-<link rel="apple-touch-icon" sizes="512x512" href="sealdv.png">
-
-<!-- Dành cho Android và Trình duyệt -->
-<link rel="icon" type="image/png" sizes="192x192" href="sealdv.png">
-<link rel="icon" type="image/png" sizes="512x512" href="sealdv.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="sealdv.png">
     
-    <!-- Khai báo chế độ App độc lập -->
+    <!-- Khai báo PWA Manifest chống viền trắng -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Khai báo chế độ App độc lập (Standalone) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Quản Lý Seal">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#111827">
+
+    <!-- Firebase Realtime Database SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
         /* --- RESET & BASIC SETUP --- */
         :root {
@@ -275,7 +280,7 @@
             </div>
         </div>
         <div class="sidebar-footer">
-            Hệ thống Quản lý Tài sản v3.5<br>Phiên bản Nội bộ (Offline)
+            Hệ thống Quản lý Tài sản v3.5<br>Phiên bản Nội bộ (Đồng bộ Firebase Cloud)
         </div>
     </div>
 
@@ -307,7 +312,7 @@
             <div class="footer-right">
                 <span style="display: flex; align-items: center; gap: 6px;">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    Hệ thống Lưu trữ Cục bộ v8.0
+                    Đồng bộ Trực tuyến Realtime v8.5
                 </span>
                 <span style="color: #d1d5db;">|</span>
                 <span style="color: #9ca3af;">Phát triển nội bộ</span>
@@ -328,6 +333,22 @@
     </div>
 
     <script>
+        // --- CẤU HÌNH FIREBASE REALTIME DATABASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7BOOute8azLGFC-6n41VfnsUcGbn3fnc",
+            authDomain: "sealdv.firebaseapp.com",
+            databaseURL: "https://sealdv-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sealdv",
+            storageBucket: "sealdv.firebasestorage.app",
+            messagingSenderId: "389366579899",
+            appId: "1:389366579899:web:9f8e43e3ca0a83fe9b841e"
+        };
+
+        // Khởi tạo Firebase SDK
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const dbRef = db.ref('seal_management_v8');
+
         const LOCATIONS = [
             'Bộ phận Thủ tục HHXNK',
             'Kho ngoại quan Transimex', 'KHO CFS PHƯỚC LONG 3', 'KHO TRANSIMEX',
@@ -505,45 +526,64 @@
                 localStorage.setItem('sealData_v8', JSON.stringify(seals));
                 localStorage.setItem('txnData_v8', JSON.stringify(transactions));
             } catch (error) {
-                console.warn("Cảnh báo: Không thể lưu bộ nhớ", error);
+                console.warn("Không thể lưu bộ nhớ cục bộ:", error);
             }
+
+            // Đẩy dữ liệu trực tiếp lên Firebase Cloud theo thời gian thực
+            dbRef.set({
+                seals: seals,
+                transactions: transactions,
+                lastUpdated: Date.now()
+            }).catch(err => console.error("Lỗi đồng bộ Firebase Cloud:", err));
         }
 
         function initData() {
-            let savedSeals = null;
-            let savedTxns = null;
-            
+            // 1. Nạp trước từ bộ nhớ máy tính để hiển thị ngay lập tức, không bị trễ giao diện
             try {
-                savedSeals = localStorage.getItem('sealData_v8');
-                savedTxns = localStorage.getItem('txnData_v8');
+                const savedSeals = localStorage.getItem('sealData_v8');
+                const savedTxns = localStorage.getItem('txnData_v8');
+                if (savedSeals && savedSeals !== '[]') {
+                    seals = JSON.parse(savedSeals);
+                    transactions = savedTxns ? JSON.parse(savedTxns) : [];
+                    renderContent();
+                }
             } catch (error) {
-                console.warn("Cảnh báo: Không thể đọc bộ nhớ", error);
+                console.warn("Không thể đọc bộ nhớ cục bộ:", error);
             }
 
-            if (savedSeals && savedSeals !== '[]') {
-                seals = JSON.parse(savedSeals);
-                transactions = savedTxns ? JSON.parse(savedTxns) : [];
-            } else {
-                seals = [];
-                const lines = RAW_SEAL_DATA.trim().split('\n');
-                
-                lines.forEach(line => {
-                    const parts = line.split('|').map(p => p.trim());
-                    if (parts.length >= 5) {
-                        seals.push({
-                            id: parts[1],           
-                            assetCode: parts[3],    
-                            location: parts[2],     
-                            year: parts[4],         
-                            status: 'Sẵn sàng',
-                            details: ''
+            // 2. Lắng nghe thay đổi tự động từ Firebase (Máy tính đổi thì Điện thoại nhảy số liệu ngay)
+            dbRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && data.seals && data.seals.length > 0) {
+                    seals = data.seals;
+                    transactions = data.transactions || [];
+                    try {
+                        localStorage.setItem('sealData_v8', JSON.stringify(seals));
+                        localStorage.setItem('txnData_v8', JSON.stringify(transactions));
+                    } catch (e) {}
+                    renderContent(); // Tự động cập nhật bảng biểu trên màn hình
+                } else {
+                    // Nếu Firebase chưa có dữ liệu, tự động khởi tạo danh sách 160 seal ban đầu
+                    if (seals.length === 0) {
+                        const lines = RAW_SEAL_DATA.trim().split('\n');
+                        lines.forEach(line => {
+                            const parts = line.split('|').map(p => p.trim());
+                            if (parts.length >= 5) {
+                                seals.push({
+                                    id: parts[1],           
+                                    assetCode: parts[3],    
+                                    location: parts[2],     
+                                    year: parts[4],         
+                                    status: 'Sẵn sàng',
+                                    details: ''
+                                });
+                            }
                         });
+                        transactions = [];
+                        saveData();
                     }
-                });
-
-                transactions = [];
-                saveData();
-            }
+                }
+            });
         }
 
         function getStats() {
@@ -1045,7 +1085,7 @@
             }, true);
         }
 
-        window.onload = () => { initData(); renderContent(); };
+        window.onload = () => { initData(); };
     </script>
 </body>
 </html>
