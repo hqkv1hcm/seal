@@ -538,7 +538,7 @@
         }
 
         function initData() {
-            // 1. Nạp trước từ bộ nhớ máy tính để hiển thị ngay lập tức, không bị trễ giao diện
+            // 1. Nạp trước từ bộ nhớ máy tính để hiển thị ngay lập tức
             try {
                 const savedSeals = localStorage.getItem('sealData_v8');
                 const savedTxns = localStorage.getItem('txnData_v8');
@@ -551,7 +551,7 @@
                 console.warn("Không thể đọc bộ nhớ cục bộ:", error);
             }
 
-            // 2. Lắng nghe thay đổi tự động từ Firebase (Máy tính đổi thì Điện thoại nhảy số liệu ngay)
+            // 2. Lắng nghe thay đổi tự động từ Firebase
             dbRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.seals && data.seals.length > 0) {
@@ -561,9 +561,15 @@
                         localStorage.setItem('sealData_v8', JSON.stringify(seals));
                         localStorage.setItem('txnData_v8', JSON.stringify(transactions));
                     } catch (e) {}
-                    renderContent(); // Tự động cập nhật bảng biểu trên màn hình
+
+                    // Nếu người dùng đang ở tab transfer, chỉ cập nhật danh sách chọn, không vẽ lại toàn bộ để tránh mất thông báo
+                    if (activeTab === 'transfer') {
+                        updateTransferSelectOptions();
+                    } else {
+                        renderContent();
+                    }
                 } else {
-                    // Nếu Firebase chưa có dữ liệu, tự động khởi tạo danh sách 160 seal ban đầu
+                    // Nếu Firebase chưa có dữ liệu, khởi tạo danh sách 160 seal ban đầu
                     if (seals.length === 0) {
                         const lines = RAW_SEAL_DATA.trim().split('\n');
                         lines.forEach(line => {
@@ -786,6 +792,18 @@
             `;
         }
 
+        function updateTransferSelectOptions() {
+            const stats = getStats();
+            const fromSelect = document.getElementById('form-from');
+            if (fromSelect) {
+                Array.from(fromSelect.options).forEach(opt => {
+                    if (opt.value && stats[opt.value] !== undefined) {
+                        opt.text = `${opt.value} (Hiện có: ${stats[opt.value]})`;
+                    }
+                });
+            }
+        }
+
         function updateTransferQty() {
             const text = document.getElementById('form-seal-ids').value;
             const uniqueIds = [...new Set(text.split(/[\n,;]+/).map(id => id.trim()).filter(id => id !== ''))];
@@ -955,9 +973,7 @@
             document.getElementById('auto-qty').innerText = '0';
             document.getElementById('form-receiver').value = '';
             
-            const newStats = getStats();
-            const fromSelect = document.getElementById('form-from');
-            Array.from(fromSelect.options).forEach(opt => { if(opt.value) opt.text = `${opt.value} (Hiện có: ${newStats[opt.value]})`; });
+            updateTransferSelectOptions();
         }
 
         function renderHistory() {
