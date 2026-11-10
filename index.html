@@ -198,8 +198,8 @@
         .footer-right { display: flex; align-items: center; gap: 16px; }
 
         /* --- RESPONSIVE OPTIMIZATIONS CHO MOBILE --- */
-        .menu-toggle { display: none; background: none; border: none; color: var(--text-dark); cursor: pointer; padding: 8px 12px 8px 0; outline: none; }
-        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 40; opacity: 0; visibility: hidden; transition: opacity 0.28s ease, visibility 0.28s ease; will-change: opacity; }
+        .menu-toggle { display: none; background: none; border: none; color: var(--text-dark); cursor: pointer; padding: 8px 12px 8px 0; outline: none; position: relative; z-index: 25; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 40; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.28s ease, visibility 0.28s ease; will-change: opacity; }
         
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
@@ -207,7 +207,7 @@
             /* Thêm đệm đỉnh cho Sidebar khi mở trên máy có tai thỏ */
                 padding-top: env(safe-area-inset-top, 0px);
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay.open { opacity: 1; visibility: visible; }
+            .sidebar-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
             
             .header { padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px 18px; justify-content: flex-start; gap: 8px }
             .header h2 { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 6px;}
@@ -288,7 +288,7 @@
         <div class="main-wrapper">
             <div class="header">
                 <div style="display: flex; align-items: center; width: 100%;">
-                    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                    <button class="menu-toggle" onclick="toggleSidebar()" ontouchstart="toggleSidebar(); event.preventDefault();" aria-label="Toggle Menu">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                     <h2>Hệ Thống Quản Lý Seal Định Vị</h2>
