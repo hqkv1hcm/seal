@@ -75,17 +75,22 @@
         
         body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-main); overflow: hidden; font-size: 14px; line-height: 1.5; }
 
-        /* --- SIDEBAR (GPU ACCELERATED) --- */
+        /* --- LOGIN SCREEN --- */
+        .login-wrapper { position: fixed; inset: 0; background: var(--bg-sidebar); display: flex; align-items: center; justify-content: center; z-index: 9999; flex-direction: column; }
+        .login-box { background: white; padding: 40px; border-radius: var(--radius-lg); width: 90%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); text-align: center; }
+        .login-box h2 { margin-bottom: 8px; color: var(--text-dark); font-size: 22px; font-weight: 800; letter-spacing: -0.5px;}
+        .login-box p { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+        .login-box .form-group { text-align: left; margin-bottom: 16px; }
+        .login-box label { font-size: 13px; color: #4b5563; }
+        .login-box input { background: #f9fafb; border: 1px solid #e5e7eb; padding: 14px 16px; font-size: 15px; }
+
+        /* --- LAYOUT WRAPPER --- */
+        #app-container { display: none; width: 100%; height: 100%; }
+
+        /* --- SIDEBAR --- */
         .sidebar { 
-            width: 260px; 
-            background-color: var(--bg-sidebar); 
-            color: var(--white); 
-            display: flex; 
-            flex-direction: column; 
-            flex-shrink: 0; 
-            z-index: 50;
-            will-change: transform;
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 260px; background-color: var(--bg-sidebar); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; z-index: 50;
+            will-change: transform; transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .sidebar-header { padding: 24px 20px; background-color: var(--bg-sidebar-header); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .sidebar-header h5 { font-size: 13px; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 4px; }
@@ -94,8 +99,7 @@
         
         .nav-item { 
             display: flex; align-items: center; padding: 12px 16px; color: var(--text-sidebar); 
-            text-decoration: none; border-radius: var(--radius-md); cursor: pointer; transition: background-color 0.15s, color 0.15s;
-            font-size: 14px; font-weight: 500;
+            text-decoration: none; border-radius: var(--radius-md); cursor: pointer; transition: background-color 0.15s, color 0.15s; font-size: 14px; font-weight: 500;
         }
         .nav-item svg { margin-right: 14px; flex-shrink: 0; }
         .nav-item:active, .nav-item:hover { background-color: rgba(255,255,255,0.07); color: var(--text-sidebar-hover); }
@@ -158,16 +162,18 @@
         textarea { resize: vertical; min-height: 80px; font-family: system-ui, sans-serif; line-height: 1.5;}
 
         /* --- BUTTONS --- */
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; box-shadow: var(--shadow-sm); }
-        .btn:active { transform: scale(0.98); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: var(--radius-md); cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.2s; }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
         .btn-secondary { background: var(--white); color: var(--text-main); border: 1px solid var(--border); box-shadow: var(--shadow-sm);}
         .btn-secondary:active { background: #f8fafc; }
+        .btn-secondary:hover { background: #f1f5f9; color: var(--text-dark); }
 
         .msg { padding: 16px; border-radius: var(--radius-md); font-size: 14px; margin-bottom: 20px; display: none; font-weight: 500; align-items: center; gap: 10px;}
         .msg.error { display: flex; background: var(--danger-bg); color: var(--danger-text); border: 1px solid #fecaca; }
         .msg.success { display: flex; background: var(--success-bg); color: var(--success-text); border: 1px solid #bbf7d0; }
 
-        .action-btn { padding: 6px 12px; border: 1px solid transparent; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; justify-content: center; align-items: center;}
+        .action-btn { padding: 6px 12px; border: 1px solid transparent; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; transition: all 0.2s;}
         .action-btn.edit { background: var(--primary-light); color: var(--primary-hover); border-color: #bfdbfe;}
         .action-btn.delete { background: var(--danger-bg); color: var(--danger-text); border-color: #fecaca;}
 
@@ -186,48 +192,20 @@
         
         /* --- FOOTER --- */
         .app-footer {
-            background: var(--white);
-            padding: 14px 28px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: #6b7280;
-            z-index: 10;
+            background: var(--white); padding: 14px 28px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #6b7280; z-index: 10;
         }
         .app-footer strong { color: var(--text-dark); font-weight: 600; }
         .footer-right { display: flex; align-items: center; gap: 16px; }
 
         /* --- RESPONSIVE OPTIMIZATIONS CHO MOBILE --- */
         .menu-toggle { display: none; background: none; border: none; color: var(--text-dark); cursor: pointer; padding: 8px 12px 8px 0; outline: none; }
-        .sidebar-overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.45); 
-            z-index: 40; 
-            opacity: 0; 
-            visibility: hidden; 
-            transition: opacity 0.28s ease, visibility 0.28s ease; 
-            will-change: opacity;
-        }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 40; opacity: 0; visibility: hidden; transition: opacity 0.28s ease, visibility 0.28s ease; will-change: opacity; }
         
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
-            .sidebar { 
-                position: fixed; 
-                left: 0; 
-                top: 0; 
-                bottom: 0; 
-                transform: translateX(-100%); 
-            }
-            .sidebar.open { 
-                transform: translateX(0); 
-            }
-            .sidebar-overlay.open { 
-                opacity: 1; 
-                visibility: visible; 
-            }
+            .sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-overlay.open { opacity: 1; visibility: visible; }
             
             .header { padding: 12px 18px; justify-content: flex-start; gap: 8px; }
             .header h2 { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 6px;}
@@ -240,82 +218,100 @@
             table { min-width: 700px; }
             .btn { width: 100%; }
             
-            .app-footer {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-                padding: 16px;
-            }
-            .footer-right {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
+            .app-footer { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
+            .footer-right { justify-content: center; flex-wrap: wrap; }
         }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h5>CHI CỤC HẢI QUAN KHU VỰC II</h5>
-            <h3>HẢI QUAN CỬA KHẨU<br>CẢNG SÀI GÒN KHU VỰC 4</h3>
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="login-wrapper">
+        <div style="margin-bottom: 24px;">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #60a5fa;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         </div>
-        <div class="nav-menu">
-            <div class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                Bảng Điều Khiển
+        <div class="login-box">
+            <h2>Đăng Nhập Hệ Thống</h2>
+            <p>Hệ Thống Quản Lý Seal Định Vị KV4</p>
+            <div class="form-group">
+                <label>Tài khoản</label>
+                <input type="text" id="username" placeholder="Nhập tài khoản..." autocomplete="off" autofocus onkeydown="if(event.key === 'Enter') handleLogin()">
             </div>
-            <div class="nav-item" onclick="switchTab('list')" id="nav-list">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
-                Danh Sách Seal
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" id="password" placeholder="Nhập mật khẩu..." autocomplete="off" onkeydown="if(event.key === 'Enter') handleLogin()">
             </div>
-            <div class="nav-item" onclick="switchTab('transfer')" id="nav-transfer">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                Điều Chuyển & Bàn Giao
-            </div>
-            <div class="nav-item" onclick="switchTab('history')" id="nav-history">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Lịch Sử Bàn Giao
-            </div>
-        </div>
-        <div class="sidebar-footer">
-            Hệ thống Quản lý Tài sản v3.5<br>Phiên bản Nội bộ (Đồng bộ Firebase Cloud)
+            <div id="login-error" class="msg error" style="display: none; padding: 12px; margin-bottom: 16px; font-size: 13px;"></div>
+            <button class="btn" style="width: 100%; padding: 14px; font-size: 15px;" onclick="handleLogin()">Đăng Nhập</button>
         </div>
     </div>
 
-    <!-- OVERLAY CHO MOBILE -->
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-
-    <!-- MAIN CONTENT -->
-    <div class="main-wrapper">
-        <div class="header">
-            <div style="display: flex; align-items: center; width: 100%;">
-                <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                </button>
-                <h2>Hệ Thống Quản Lý Seal Định Vị Điện Tử</h2>
-            </div>
-            <div class="user-info">
-                <div class="avatar">HQ</div>
-                Admin_CangSG
-            </div>
-        </div>
+    <!-- APP CONTAINER (Bọc toàn bộ nội dung App, ẩn khi chưa đăng nhập) -->
+    <div id="app-container">
         
-        <div class="content-area" id="app-content">
-            <!-- Render by JS -->
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h5>CHI CỤC HẢI QUAN KHU VỰC II</h5>
+                <h3>HẢI QUAN CỬA KHẨU<br>CẢNG SÀI GÒN KHU VỰC 4</h3>
+            </div>
+            <div class="nav-menu">
+                <div class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    Bảng Điều Khiển
+                </div>
+                <div class="nav-item" onclick="switchTab('list')" id="nav-list">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                    Danh Sách Seal
+                </div>
+                <div class="nav-item" onclick="switchTab('transfer')" id="nav-transfer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 21l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+                    Điều Chuyển & Bàn Giao
+                </div>
+                <div class="nav-item" onclick="switchTab('history')" id="nav-history">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Lịch Sử Bàn Giao
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                Hệ thống Quản lý v3.5<br>Phiên bản Nội bộ
+                <button onclick="handleLogout()" style="margin-top: 12px; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 13px; font-weight: bold; width: 100%; transition: all 0.2s;">Đăng Xuất</button>
+            </div>
         </div>
 
-        <!-- FOOTER -->
-        <div class="app-footer">
-            <div>&copy; 2026. All rights reserved ✪ Designed by <strong>Trần Duy Trung | KV02-HQ10-0032</strong></div>
-            <div class="footer-right">
-                <span style="display: flex; align-items: center; gap: 6px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    Đồng bộ Trực tuyến Realtime v8.5
-                </span>
-                <span style="color: #d1d5db;">|</span>
-                <span style="color: #9ca3af;">Phát triển nội bộ</span>
+        <!-- OVERLAY CHO MOBILE -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-wrapper">
+            <div class="header">
+                <div style="display: flex; align-items: center; width: 100%;">
+                    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <h2>Hệ Thống Quản Lý Seal Định Vị</h2>
+                </div>
+                <div class="user-info">
+                    <div class="avatar">HQ</div>
+                    <span id="header-username">Admin</span>
+                </div>
+            </div>
+            
+            <div class="content-area" id="app-content">
+                <!-- Render by JS -->
+            </div>
+
+            <!-- FOOTER -->
+            <div class="app-footer">
+                <div>&copy; 2026. All rights reserved ✪ Designed by <strong>Trần Duy Trung | KV02-HQ10-0032</strong></div>
+                <div class="footer-right">
+                    <span style="display: flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Đồng bộ Trực tuyến Realtime v8.5
+                    </span>
+                    <span style="color: #d1d5db;">|</span>
+                    <span style="color: #9ca3af;">Phát triển nội bộ</span>
+                </div>
             </div>
         </div>
     </div>
@@ -333,6 +329,61 @@
     </div>
 
     <script>
+        // --- HỆ THỐNG XÁC THỰC (AUTH) ---
+        const USERS = {
+            'admin': '111213', // Toàn quyền (Có Xóa & Hoàn tác)
+            'kv4': '123456'    // Giới hạn (Chỉ thao tác, KHÔNG có quyền Xóa & Hoàn tác)
+        };
+        let currentUser = null;
+
+        function checkAuth() {
+            const savedUser = localStorage.getItem('seal_user_session');
+            if (savedUser && USERS[savedUser]) {
+                currentUser = savedUser;
+                showApp();
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app-container').style.display = 'none';
+            }
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('username').value.trim().toLowerCase();
+            const p = document.getElementById('password').value.trim();
+            const err = document.getElementById('login-error');
+            
+            if (USERS[u] && USERS[u] === p) {
+                currentUser = u;
+                localStorage.setItem('seal_user_session', u);
+                err.style.display = 'none';
+                showApp();
+            } else {
+                err.innerHTML = "Tài khoản hoặc mật khẩu không đúng!";
+                err.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('seal_user_session');
+            currentUser = null;
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function showApp() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('app-container').style.display = 'flex';
+            
+            const headerUser = document.getElementById('header-username');
+            if (headerUser) {
+                headerUser.innerText = currentUser === 'admin' ? 'Quản trị viên (Admin)' : 'Cán bộ KV4';
+            }
+            
+            initData(); // Bắt đầu nạp dữ liệu và vẽ giao diện
+        }
+
         // --- CẤU HÌNH FIREBASE REALTIME DATABASE ---
         const firebaseConfig = {
             apiKey: "AIzaSyB7BOOute8azLGFC-6n41VfnsUcGbn3fnc",
@@ -344,7 +395,6 @@
             appId: "1:389366579899:web:9f8e43e3ca0a83fe9b841e"
         };
 
-        // Khởi tạo Firebase SDK
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const dbRef = db.ref('seal_management_v8');
@@ -529,7 +579,6 @@
                 console.warn("Không thể lưu bộ nhớ cục bộ:", error);
             }
 
-            // Đẩy dữ liệu trực tiếp lên Firebase Cloud theo thời gian thực
             dbRef.set({
                 seals: seals,
                 transactions: transactions,
@@ -538,7 +587,6 @@
         }
 
         function initData() {
-            // 1. Nạp trước từ bộ nhớ máy tính để hiển thị ngay lập tức
             try {
                 const savedSeals = localStorage.getItem('sealData_v8');
                 const savedTxns = localStorage.getItem('txnData_v8');
@@ -551,7 +599,6 @@
                 console.warn("Không thể đọc bộ nhớ cục bộ:", error);
             }
 
-            // 2. Lắng nghe thay đổi tự động từ Firebase
             dbRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.seals && data.seals.length > 0) {
@@ -562,27 +609,18 @@
                         localStorage.setItem('txnData_v8', JSON.stringify(transactions));
                     } catch (e) {}
 
-                    // Nếu người dùng đang ở tab transfer, chỉ cập nhật danh sách chọn, không vẽ lại toàn bộ để tránh mất thông báo
                     if (activeTab === 'transfer') {
                         updateTransferSelectOptions();
                     } else {
                         renderContent();
                     }
                 } else {
-                    // Nếu Firebase chưa có dữ liệu, khởi tạo danh sách 160 seal ban đầu
                     if (seals.length === 0) {
                         const lines = RAW_SEAL_DATA.trim().split('\n');
                         lines.forEach(line => {
                             const parts = line.split('|').map(p => p.trim());
                             if (parts.length >= 5) {
-                                seals.push({
-                                    id: parts[1],           
-                                    assetCode: parts[3],    
-                                    location: parts[2],     
-                                    year: parts[4],         
-                                    status: 'Sẵn sàng',
-                                    details: ''
-                                });
+                                seals.push({ id: parts[1], assetCode: parts[3], location: parts[2], year: parts[4], status: 'Sẵn sàng', details: '' });
                             }
                         });
                         transactions = [];
@@ -981,6 +1019,14 @@
             
             let rowsHtml = '';
             transactions.forEach(txn => {
+                // ---- PHÂN QUYỀN HIỂN THỊ NÚT XÓA TẠI ĐÂY ----
+                let deleteBtnHtml = '';
+                if (currentUser === 'admin') {
+                    deleteBtnHtml = `<button class="action-btn delete" onclick="openDeleteModal('${txn.id}')">Xóa & Hoàn tác</button>`;
+                } else {
+                    deleteBtnHtml = `<span style="font-size: 12px; color: #9ca3af; font-style: italic;">Chỉ xem</span>`;
+                }
+
                 rowsHtml += `
                     <tr>
                         <td style="color: #6b7280; font-size: 13px;">${txn.time}</td>
@@ -989,12 +1035,12 @@
                         <td style="text-align: center; font-weight: 800; font-size: 16px;">${txn.qty}</td>
                         <td style="font-weight: 500;">${txn.receiver}</td>
                         <td style="font-size: 12px; color: #6b7280; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace;" title="${txn.details}">${txn.details}</td>
-                        <td><button class="action-btn delete" onclick="openDeleteModal('${txn.id}')">Xóa & Hoàn tác</button></td>
+                        <td style="text-align: center;">${deleteBtnHtml}</td>
                     </tr>
                 `;
             });
 
-            return `<h1 class="page-title">Lịch Sử Giao Dịch & Biên Bản Bàn Giao</h1><div class="card table-container"><table><thead><tr><th>Thời gian</th><th>Bên Giao</th><th>Bên Nhận</th><th style="text-align: center;">Số lượng</th><th>Người nhận ký</th><th>Chi tiết Mã Seal</th><th>Tác vụ</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
+            return `<h1 class="page-title">Lịch Sử Giao Dịch & Biên Bản Bàn Giao</h1><div class="card table-container"><table><thead><tr><th>Thời gian</th><th>Bên Giao</th><th>Bên Nhận</th><th style="text-align: center;">Số lượng</th><th>Người nhận ký</th><th>Chi tiết Mã Seal</th><th style="text-align: center;">Tác vụ</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
         }
 
         function filterSeals() {
@@ -1085,6 +1131,8 @@
         }
 
         function openDeleteModal(txnId) {
+            if (currentUser !== 'admin') return; // Chặn kỹ thuật nếu người dùng cố tình gọi hàm
+            
             const txn = transactions.find(t => t.id === txnId);
             if(!txn) return;
             const body = `
@@ -1101,7 +1149,7 @@
             }, true);
         }
 
-        window.onload = () => { initData(); };
+        window.onload = () => { checkAuth(); };
     </script>
 </body>
 </html>
