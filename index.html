@@ -357,7 +357,18 @@
         .user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--navy-dark); background: var(--bg-subtle); padding: 5px 12px 5px 6px; border-radius: 99px; border: 1px solid var(--border);}
         .avatar { width: 30px; height: 30px; background: var(--navy-dark); color: #38bdf8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; border: 1px solid rgba(56, 189, 248, 0.4);}
         
-        .content-area { flex: 1; padding: 26px 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-behavior: smooth;}
+        .content-area { 
+            flex: 1; 
+            padding: 26px 28px calc(24px + env(safe-area-inset-bottom, 0px)) 28px; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+        }
+        #app-content {
+            flex: 1;
+        }
         .page-title { 
             font-size: 21px; font-weight: 800; color: var(--navy-dark); 
             margin-bottom: 22px; letter-spacing: -0.4px;
@@ -649,11 +660,17 @@
         .modal-content h3 { margin-bottom: 18px; color: var(--navy-dark); font-size: 18px; font-weight: 800; border-bottom: 1px solid var(--border); padding-bottom: 12px;}
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
         
-        /* --- FOOTER --- */
+        /* --- FOOTER (NON-STICKY / SCROLLABLE) --- */
         .app-footer {
-            background: var(--bg-surface); padding: 12px 28px; border-top: 1px solid var(--border); 
-            display: flex; justify-content: space-between; align-items: center; 
-            font-size: 12.5px; color: var(--text-muted); z-index: 10; font-weight: 500;
+            margin-top: 24px;
+            padding: 16px 4px 6px 4px; 
+            border-top: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 12.5px; 
+            color: var(--text-muted); 
+            font-weight: 500;
         }
 
         /* --- RESPONSIVE & SAFE AREA CHO MOBILE --- */
@@ -686,7 +703,7 @@
             .header h2 { font-size: 15px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
             .status-pill { display: none; }
             .user-info { display: none; }
-            .content-area { padding: 16px; }
+            .content-area { padding: 16px 16px calc(20px + env(safe-area-inset-bottom, 0px)) 16px; }
             .grid-4 { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;}
             .stat-card { padding: 15px 16px; }
             .stat-card-icon { display: none; }
@@ -697,8 +714,10 @@
             .btn { width: 100%; }
             
             .app-footer { 
-                flex-direction: column; text-align: center; gap: 8px; 
-                padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)) 16px; 
+                flex-direction: column; 
+                text-align: center; 
+                gap: 6px; 
+                padding: 14px 4px 4px 4px; 
             }
         }
     </style>
@@ -769,7 +788,7 @@
                 </div>
             </div>
             <div class="sidebar-footer">
-                TELEMETRY SEAL SYSTEM v8.7<br>Phân quyền khóa hồ sơ QĐ 2246
+                TELEMETRY SEAL SYSTEM v8.8<br>Phân quyền khóa hồ sơ QĐ 2246
                 <button class="btn-logout" onclick="handleLogout()">Đăng Xuất Phiên</button>
             </div>
         </div>
@@ -795,14 +814,16 @@
                 </div>
             </div>
             
-            <div class="content-area" id="app-content">
-                <!-- Render by JS -->
-            </div>
+            <div class="content-area" id="content-scroll-area">
+                <div id="app-content">
+                    <!-- Render by JS -->
+                </div>
 
-            <!-- FOOTER -->
-            <div class="app-footer">
-                <div>&copy; 2026 ✪ Thiết kế bởi <strong>Trần Duy Trung - HQ100032</strong></div>
-                <div style="font-family: var(--font-mono); font-size: 11.5px; color: #94a3b8;"></div>
+                <!-- FOOTER (Cuộn tự nhiên theo nội dung trang) -->
+                <div class="app-footer">
+                    <div>&copy; 2026 ✪ Hệ thống Quản lý Seal Định vị Điện tử — Thiết kế bởi <strong>Trần Duy Trung (HQ100032)</strong></div>
+                    <div style="font-family: var(--font-mono); font-size: 11.5px; color: #94a3b8;">NODE: CSG-KV4 // RBAC LOCKED</div>
+                </div>
             </div>
         </div>
     </div>
@@ -820,6 +841,9 @@
     </div>
 
     <script>
+        const NL = String.fromCharCode(10);
+        const SPLIT_REGEX = new RegExp('[' + NL + ',;]+');
+
         // --- HỆ THỐNG XÁC THỰC (AUTH) + REMEMBER USER ---
         const USERS = {
             'admin': '111213', // Toàn quyền (Sửa 56 seal thanh lý, Xóa & Hoàn tác)
@@ -1213,7 +1237,7 @@
                     }
                 } else {
                     if (seals.length === 0) {
-                        const lines = RAW_SEAL_DATA.trim().split('\n');
+                        const lines = RAW_SEAL_DATA.trim().split(NL);
                         lines.forEach(line => {
                             const parts = line.split('|').map(p => p.trim());
                             if (parts.length >= 5) {
@@ -1272,6 +1296,9 @@
             if (sidebar) sidebar.classList.remove('open');
             if (overlay) overlay.classList.remove('open');
             
+            const scrollArea = document.getElementById('content-scroll-area');
+            if (scrollArea) scrollArea.scrollTop = 0;
+
             renderContent();
         }
 
@@ -1769,7 +1796,7 @@
 
         function updateTransferQty() {
             const text = document.getElementById('form-seal-ids').value;
-            const uniqueIds = [...new Set(text.split(/[\n,;]+/).map(id => id.trim()).filter(id => id !== ''))];
+            const uniqueIds = [...new Set(text.split(SPLIT_REGEX).map(id => id.trim()).filter(id => id !== ''))];
             const counter = document.getElementById('auto-qty');
             if(counter) counter.innerText = uniqueIds.length;
         }
@@ -1786,7 +1813,7 @@
             }
 
             const text = textarea.value;
-            const parts = text.split(/[\n,;]+/);
+            const parts = text.split(SPLIT_REGEX);
             const currentTerm = parts[parts.length - 1].trim().toLowerCase();
 
             if (currentTerm.length < 1) {
@@ -1822,13 +1849,13 @@
             
             const lastComma = text.lastIndexOf(',');
             const lastSemicolon = text.lastIndexOf(';');
-            const lastNewline = text.lastIndexOf('\n');
+            const lastNewline = text.lastIndexOf(NL);
             const lastIndex = Math.max(lastComma, lastSemicolon, lastNewline);
             
             let newText = '';
             if (lastIndex !== -1) {
                 let prefix = text.substring(0, lastIndex + 1);
-                if (!prefix.endsWith(' ') && !prefix.endsWith('\n')) prefix += ' ';
+                if (!prefix.endsWith(' ') && !prefix.endsWith(NL)) prefix += ' ';
                 newText = prefix + sealId + ', ';
             } else {
                 newText = sealId + ', ';
@@ -1871,7 +1898,7 @@
                 return; 
             }
 
-            const inputIds = sealIdsText.split(/[\n,;]+/).map(id => id.trim()).filter(id => id !== '');
+            const inputIds = sealIdsText.split(SPLIT_REGEX).map(id => id.trim()).filter(id => id !== '');
             const uniqueInputIds = [...new Set(inputIds)];
             const qty = uniqueInputIds.length;
 
