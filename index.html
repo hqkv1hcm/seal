@@ -788,7 +788,7 @@
                 </div>
             </div>
             <div class="sidebar-footer">
-                TELEMETRY SEAL SYSTEM v8.8<br>Phân quyền khóa hồ sơ QĐ 2246
+                TELEMETRY SEAL SYSTEM v8.9<br>Phân quyền khóa hồ sơ QĐ 2246
                 <button class="btn-logout" onclick="handleLogout()">Đăng Xuất Phiên</button>
             </div>
         </div>
@@ -1358,7 +1358,7 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                         </div>
                     </div>
-                    <div class="stat-card green" style="cursor:pointer;" onclick="listFilterMode='active'; switchTab('list');">
+                    <div class="stat-card green" style="cursor:pointer;" onclick="listFilterMode='active_icd'; switchTab('list');">
                         <div>
                             <div class="stat-title">Khai thác tại ICD / Kho</div>
                             <div class="stat-value">${seals.filter(s => s.location !== 'Bộ phận Thủ tục HHXNK' && !s.isLiquidation).length}</div>
@@ -1449,10 +1449,13 @@
         function renderList() {
             const liqStats = getLiquidationStats();
             const activeCount = seals.length - liqStats.total;
+            const activeIcdCount = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK').length;
 
             let filteredSeals = seals;
             if (listFilterMode === 'active') {
                 filteredSeals = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id]);
+            } else if (listFilterMode === 'active_icd') {
+                filteredSeals = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK');
             } else if (listFilterMode === 'liquidation') {
                 filteredSeals = seals.filter(s => s.isLiquidation || LIQUIDATION_2246[s.id]);
             } else if (listFilterMode === 'uncollected') {
@@ -1525,6 +1528,7 @@
                         <div class="filter-bar">
                             <button class="filter-pill ${listFilterMode === 'all' ? 'active' : ''}" onclick="setListFilter('all')">Tất cả (${seals.length})</button>
                             <button class="filter-pill ${listFilterMode === 'active' ? 'active' : ''}" onclick="setListFilter('active')">Đang khai thác (${activeCount})</button>
+                            <button class="filter-pill ${listFilterMode === 'active_icd' ? 'active' : ''}" onclick="setListFilter('active_icd')">Khai thác tại ICD / Kho (${activeIcdCount})</button>
                             <button class="filter-pill liq-pill ${listFilterMode === 'liquidation' ? 'active' : ''}" onclick="setListFilter('liquidation')">Thuộc diện Thanh lý QĐ 2246 (${liqStats.total})</button>
                             <button class="filter-pill liq-pill ${listFilterMode === 'uncollected' ? 'active' : ''}" onclick="setListFilter('uncollected')">Chưa thu hồi về Thủ tục (${liqStats.uncollected})</button>
                         </div>
