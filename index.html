@@ -781,7 +781,7 @@
                 </div>
             </div>
             <div class="sidebar-footer">
-                TELEMETRY SEAL SYSTEM v9.3<br>Phân quyền khóa hồ sơ QĐ 2246
+                TELEMETRY SEAL SYSTEM v9.5<br>Phân quyền khóa hồ sơ QĐ 2246
                 <button class="btn-logout" onclick="handleLogout()">Đăng Xuất Phiên</button>
             </div>
         </div>
@@ -922,6 +922,7 @@
         const dbRef = db.ref('seal_management_v8');
 
         const LOCATIONS = [
+            'Văn phòng GSKS',
             'Bộ phận Thủ tục HHXNK',
             'Kho ngoại quan Transimex', 'KHO CFS PHƯỚC LONG 3', 'KHO TRANSIMEX',
             'ICD PHƯỚC LONG 1', 'ICD PHƯỚC LONG 3', 'ICD SOTRANS', 'ICD TANAMEXCO', 'ICD TRANSIMEX', 'ICD TÂY NAM'
@@ -1538,13 +1539,15 @@
 
         function getLiquidationStats() {
             const liqSeals = seals.filter(s => s.isLiquidation || LIQUIDATION_2246[s.id]);
-            const collected = liqSeals.filter(s => s.location === 'Bộ phận Thủ tục HHXNK');
-            const uncollected = liqSeals.filter(s => s.location !== 'Bộ phận Thủ tục HHXNK');
+            const atVpGsks = liqSeals.filter(s => s.location === 'Văn phòng GSKS');
+            const atTthhxnk = liqSeals.filter(s => s.location === 'Bộ phận Thủ tục HHXNK');
+            const collected = liqSeals.filter(s => s.location === 'Văn phòng GSKS' || s.location === 'Bộ phận Thủ tục HHXNK');
+            const uncollected = liqSeals.filter(s => s.location !== 'Văn phòng GSKS' && s.location !== 'Bộ phận Thủ tục HHXNK');
             const byLocation = {};
             uncollected.forEach(s => {
                 byLocation[s.location] = (byLocation[s.location] || 0) + 1;
             });
-            return { total: liqSeals.length, collected: collected.length, uncollected: uncollected.length, byLocation, liqSeals };
+            return { total: liqSeals.length, collected: collected.length, atVpGsks: atVpGsks.length, atTthhxnk: atTthhxnk.length, uncollected: uncollected.length, byLocation, liqSeals };
         }
 
         function toggleSidebar() {
@@ -1654,7 +1657,7 @@
                     <div class="stat-card green" style="cursor:pointer;" onclick="listFilterMode='active_icd'; switchTab('list');">
                         <div>
                             <div class="stat-title">Khai thác tại ICD / Kho</div>
-                            <div class="stat-value">${seals.filter(s => s.location !== 'Bộ phận Thủ tục HHXNK' && !s.isLiquidation).length}</div>
+                            <div class="stat-value">${seals.filter(s => s.location !== 'Bộ phận Thủ tục HHXNK' && s.location !== 'Văn phòng GSKS' && !s.isLiquidation).length}</div>
                             <div class="stat-sub">Thiết bị đang hoạt động</div>
                         </div>
                         <div class="stat-card-icon">
@@ -1665,7 +1668,7 @@
                         <div>
                             <div class="stat-title">Tại Bộ phận Thủ tục</div>
                             <div class="stat-value">${stats['Bộ phận Thủ tục HHXNK'] || 0}</div>
-                            <div class="stat-sub">Gồm ${liqStats.collected} seal chờ bàn giao TL</div>
+                            <div class="stat-sub">10 khai thác + ${liqStats.atTthhxnk} lưu tại chỗ chờ TL</div>
                         </div>
                         <div class="stat-card-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1696,14 +1699,15 @@
                     </div>
                     <div class="liq-stats-row">
                         <div class="liq-chip">Tổng duyệt thanh lý: <strong style="color:#6b21a8;">${liqStats.total}</strong></div>
-                        <div class="liq-chip">Đã tập kết về Thủ tục: <strong style="color:#047857;">${liqStats.collected}</strong></div>
-                        <div class="liq-chip">Còn tại các ICD / Kho: <strong style="color:#b91c1c;">${liqStats.uncollected}</strong></div>
+                        <div class="liq-chip" style="cursor:pointer;" onclick="viewLocation('Bộ phận Thủ tục HHXNK')">Lưu tại TTHHXNK: <strong style="color:#0284c7;">${liqStats.atTthhxnk}</strong></div>
+                        <div class="liq-chip" style="cursor:pointer;" onclick="viewLocation('Văn phòng GSKS')">Đã thu hồi về VP GSKS: <strong style="color:#047857;">${liqStats.atVpGsks}</strong></div>
+                        <div class="liq-chip" style="cursor:pointer;" onclick="listFilterMode='uncollected'; switchTab('list');">Còn tại Kho / ICD cần thu hồi: <strong style="color:#b91c1c;">${liqStats.uncollected}</strong></div>
                     </div>
                     ${liqStats.uncollected > 0 ? `
                         <div style="font-size:12.5px; color:#581c87; margin-bottom:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                            <span style="font-weight:700;">Cần thu hồi từ:</span> ${uncollectedHtml}
+                            <span style="font-weight:700;">Cần thu hồi về Văn phòng GSKS từ các Kho/ICD:</span> ${uncollectedHtml}
                         </div>
-                    ` : `<div style="font-size:13px; color:#047857; font-weight:700;">✓ Đã thu hồi 100% thiết bị thanh lý về Bộ phận Thủ tục HHXNK.</div>`}
+                    ` : `<div style="font-size:13px; color:#047857; font-weight:700;">✓ Đã thu hồi 100% thiết bị thanh lý từ các Kho/ICD về Văn phòng GSKS (10 seal tại TTHHXNK giữ nguyên tại chỗ).</div>`}
                     <div class="progress-track">
                         <div class="progress-fill" style="width: ${percentCollected}%;"></div>
                     </div>
@@ -1717,7 +1721,7 @@
                         <h3>Chỉ đạo điều hành luân chuyển (Lãnh đạo Đội)</h3>
                         <p>1. Thực hiện bàn giao seal đang khai thác từ <strong>Bộ phận Thủ tục HHXNK</strong> sang <strong>Kho CFS Phước Long 3</strong>.</p>
                         <p>2. Thực hiện bàn giao seal đang khai thác từ <strong>Kho bãi cổng Transimex</strong> sang <strong>Kho ngoại quan Transimex</strong>.</p>
-                        <p>3. Thu hồi toàn bộ <strong>56 seal thuộc Quyết định 2246/QĐ-HQKV2</strong> về <strong>Bộ phận Thủ tục HHXNK</strong> để bàn giao Văn phòng Chi cục.</p>
+                        <p>3. Đối với <strong>56 seal thanh lý (QĐ 2246/QĐ-HQKV2)</strong>: Giữ nguyên <strong>10 seal tại Bộ phận Thủ tục HHXNK</strong>; thu hồi <strong>46 seal tại các Kho, ICD</strong> về <strong>Văn phòng GSKS</strong> để chờ bàn giao Văn phòng Chi cục.</p>
                         <div class="alert-quota-badge">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                             ĐỊNH MỨC QUY ĐỊNH: Các ICD (Phước Long 1, Sotrans, Tanamexco) chỉ được giữ tối đa 02 seal dự phòng.
@@ -1742,17 +1746,17 @@
         function renderList() {
             const liqStats = getLiquidationStats();
             const activeCount = seals.length - liqStats.total;
-            const activeIcdCount = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK').length;
+            const activeIcdCount = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK' && s.location !== 'Văn phòng GSKS').length;
 
             let filteredSeals = seals;
             if (listFilterMode === 'active') {
                 filteredSeals = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id]);
             } else if (listFilterMode === 'active_icd') {
-                filteredSeals = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK');
+                filteredSeals = seals.filter(s => !s.isLiquidation && !LIQUIDATION_2246[s.id] && s.location !== 'Bộ phận Thủ tục HHXNK' && s.location !== 'Văn phòng GSKS');
             } else if (listFilterMode === 'liquidation') {
                 filteredSeals = seals.filter(s => s.isLiquidation || LIQUIDATION_2246[s.id]);
             } else if (listFilterMode === 'uncollected') {
-                filteredSeals = seals.filter(s => (s.isLiquidation || LIQUIDATION_2246[s.id]) && s.location !== 'Bộ phận Thủ tục HHXNK');
+                filteredSeals = seals.filter(s => (s.isLiquidation || LIQUIDATION_2246[s.id]) && s.location !== 'Văn phòng GSKS' && s.location !== 'Bộ phận Thủ tục HHXNK');
             }
 
             let rowsHtml = '';
@@ -1764,8 +1768,8 @@
                 else if (seal.status === 'Hỏng/Lỗi') statusClass = 'warning';
                 else if (seal.status === 'Mất') statusClass = 'danger';
 
-                const recallBtn = (isLiq && seal.location !== 'Bộ phận Thủ tục HHXNK') 
-                    ? `<button class="action-btn recall" onclick="quickRecallSeal('${seal.id}')" title="Thu hồi nhanh về Bộ phận Thủ tục HHXNK">Thu hồi</button>` 
+                const recallBtn = (isLiq && seal.location !== 'Văn phòng GSKS' && seal.location !== 'Bộ phận Thủ tục HHXNK') 
+                    ? `<button class="action-btn recall" onclick="quickRecallSeal('${seal.id}')" title="Thu hồi từ Kho/ICD về Văn phòng GSKS">Thu hồi về VP GSKS</button>` 
                     : '';
 
                 // Phân quyền chỉnh sửa: Khóa 56 seal thanh lý đối với tài khoản kv4, chỉ cho phép admin chỉnh sửa
@@ -1826,7 +1830,7 @@
                             <button class="filter-pill ${listFilterMode === 'active' ? 'active' : ''}" onclick="setListFilter('active')">Đang khai thác (${activeCount})</button>
                             <button class="filter-pill ${listFilterMode === 'active_icd' ? 'active' : ''}" onclick="setListFilter('active_icd')">Khai thác tại ICD / Kho (${activeIcdCount})</button>
                             <button class="filter-pill liq-pill ${listFilterMode === 'liquidation' ? 'active' : ''}" onclick="setListFilter('liquidation')">Thuộc diện Thanh lý QĐ 2246 (${liqStats.total})</button>
-                            <button class="filter-pill liq-pill ${listFilterMode === 'uncollected' ? 'active' : ''}" onclick="setListFilter('uncollected')">Chưa thu hồi về Thủ tục (${liqStats.uncollected})</button>
+                            <button class="filter-pill liq-pill ${listFilterMode === 'uncollected' ? 'active' : ''}" onclick="setListFilter('uncollected')">Chưa thu hồi về VP GSKS (${liqStats.uncollected})</button>
                         </div>
                     </div>
                 </div>
@@ -1856,14 +1860,17 @@
 
             liqStats.liqSeals.forEach(seal => {
                 const info = LIQUIDATION_2246[seal.id] || {};
-                const isCollected = seal.location === 'Bộ phận Thủ tục HHXNK';
-                const statusBadge = isCollected 
-                    ? `<span class="badge status">Đã thu hồi (Thủ tục)</span>` 
-                    : `<span class="badge warning">Chưa thu hồi</span>`;
+                const isAtVpGsks = seal.location === 'Văn phòng GSKS';
+                const isAtTthhxnk = seal.location === 'Bộ phận Thủ tục HHXNK';
+                const isCollected = isAtVpGsks || isAtTthhxnk;
+
+                let statusBadge = `<span class="badge warning">Chưa thu hồi (Kho/ICD)</span>`;
+                if (isAtVpGsks) statusBadge = `<span class="badge status">Đã thu hồi (VP GSKS)</span>`;
+                else if (isAtTthhxnk) statusBadge = `<span class="badge active">Lưu tại TTHHXNK</span>`;
                 
-                const recallBtn = isCollected 
-                    ? `<span style="font-size:12px; color:#047857; font-weight:700;">✓ Sẵn sàng bàn giao VP</span>`
-                    : `<button class="action-btn recall" onclick="quickRecallSeal('${seal.id}')">Thu hồi về Thủ tục</button>`;
+                let recallBtn = `<button class="action-btn recall" onclick="quickRecallSeal('${seal.id}')">Thu hồi về VP GSKS</button>`;
+                if (isAtVpGsks) recallBtn = `<span style="font-size:12px; color:#047857; font-weight:700;">✓ Đã về VP GSKS</span>`;
+                else if (isAtTthhxnk) recallBtn = `<span style="font-size:12px; color:#0284c7; font-weight:700;">✓ Giữ nguyên tại TTHHXNK</span>`;
 
                 const adminEditBtn = currentUser === 'admin'
                     ? `<button class="action-btn edit" onclick="openEditModal('${seal.id}')" title="Chỉnh sửa thông tin (Chỉ Admin)">Sửa</button>`
@@ -1910,12 +1917,13 @@
                         <div>
                             <div style="font-size:13px; font-weight:800; color:#581c87; text-transform:uppercase; margin-bottom:4px;">Căn cứ pháp lý: Quyết định số 2246/QĐ-HQKV2 ngày 01/10/2026</div>
                             <div style="font-size:13px; color:#6b21a8;">Hình thức xử lý: <strong>Bán thanh lý</strong> • Tổng nguyên giá: <strong>926.003.000 đ</strong> • Giá trị còn lại: <strong>282.103.952 đ</strong></div>
-                            ${currentUser !== 'admin' ? `<div style="font-size:12px; color:#7e22ce; margin-top:6px; font-weight:600;">🔒 Chế độ tài khoản KV4: Được phép thu hồi thiết bị về Thủ tục; khóa chỉnh sửa mã tài sản & trạng thái thanh lý.</div>` : ''}
+                            ${currentUser !== 'admin' ? `<div style="font-size:12px; color:#7e22ce; margin-top:6px; font-weight:600;">🔒 Chế độ tài khoản KV4: Được phép thu hồi thiết bị về Văn phòng GSKS; khóa chỉnh sửa mã tài sản & trạng thái thanh lý.</div>` : ''}
                         </div>
                         <div class="liq-stats-row" style="margin-bottom:0;">
                             <div class="liq-chip">Tổng: <strong style="color:#6b21a8;">${liqStats.total}</strong></div>
-                            <div class="liq-chip">Đã thu hồi: <strong style="color:#047857;">${liqStats.collected}</strong></div>
-                            <div class="liq-chip">Còn lại: <strong style="color:#b91c1c;">${liqStats.uncollected}</strong></div>
+                            <div class="liq-chip">Lưu tại TTHHXNK: <strong style="color:#0284c7;">${liqStats.atTthhxnk}</strong></div>
+                            <div class="liq-chip">Đã về VP GSKS: <strong style="color:#047857;">${liqStats.atVpGsks}</strong></div>
+                            <div class="liq-chip">Còn tại Kho/ICD: <strong style="color:#b91c1c;">${liqStats.uncollected}</strong></div>
                         </div>
                     </div>
                 </div>
@@ -1957,26 +1965,26 @@
 
         function quickRecallSeal(sealId) {
             const seal = seals.find(s => s.id === sealId);
-            if (!seal || seal.location === 'Bộ phận Thủ tục HHXNK') return;
+            if (!seal || seal.location === 'Văn phòng GSKS' || seal.location === 'Bộ phận Thủ tục HHXNK') return;
             const fromLoc = seal.location;
             
             const body = `
-                <p style="font-size:14px; color:var(--text-dark); margin-bottom:12px;">Xác nhận thu hồi thiết bị thanh lý <span class="seal-tag liq-tag">${seal.id}</span> (Mã TS: <b>${seal.assetCode}</b>) từ <b>${fromLoc}</b> về <b>Bộ phận Thủ tục HHXNK</b>?</p>
+                <p style="font-size:14px; color:var(--text-dark); margin-bottom:12px;">Xác nhận thu hồi thiết bị thanh lý <span class="seal-tag liq-tag">${seal.id}</span> (Mã TS: <b>${seal.assetCode}</b>) từ <b>${fromLoc}</b> về <b>Văn phòng GSKS</b>?</p>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label>Cán bộ tiếp nhận thu hồi:</label>
-                    <input type="text" id="recallReceiverInput" value="${currentUser === 'admin' ? 'Admin KV4' : 'Cán bộ Thủ tục KV4'}" />
+                    <label>Cán bộ tiếp nhận thu hồi (Văn phòng GSKS):</label>
+                    <input type="text" id="recallReceiverInput" value="${currentUser === 'admin' ? 'Admin KV4' : 'Cán bộ Văn phòng GSKS'}" />
                 </div>
             `;
-            showModal('Thu Hồi Seal Thanh Lý (QĐ 2246)', body, () => {
-                const receiver = document.getElementById('recallReceiverInput').value.trim() || 'Cán bộ Thủ tục KV4';
-                seal.location = 'Bộ phận Thủ tục HHXNK';
+            showModal('Thu Hồi Seal Thanh Lý Về Văn Phòng GSKS', body, () => {
+                const receiver = document.getElementById('recallReceiverInput').value.trim() || 'Cán bộ Văn phòng GSKS';
+                seal.location = 'Văn phòng GSKS';
                 const now = new Date();
                 const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
                 transactions.unshift({
                     id: 'TXN-' + Date.now(),
                     time: timeStr,
                     from: fromLoc,
-                    to: 'Bộ phận Thủ tục HHXNK',
+                    to: 'Văn phòng GSKS',
                     qty: 1,
                     receiver: receiver + ' (Thu hồi TL QĐ 2246)',
                     details: seal.id
@@ -1998,24 +2006,24 @@
             });
 
             const body = `
-                <p style="font-size:13.5px; color:var(--text-main); margin-bottom:14px;">Chọn đơn vị để thu hồi toàn bộ seal thuộc diện thanh lý <b>QĐ 2246/QĐ-HQKV2</b> tại đơn vị đó về <b>Bộ phận Thủ tục HHXNK</b>:</p>
+                <p style="font-size:13.5px; color:var(--text-main); margin-bottom:14px;">Chọn Kho / ICD để thu hồi toàn bộ seal thuộc diện thanh lý <b>QĐ 2246/QĐ-HQKV2</b> tại địa điểm đó về <b>Văn phòng GSKS</b> (10 seal tại Bộ phận Thủ tục HHXNK giữ nguyên không thu hồi):</p>
                 <div class="form-group">
                     <label>Đơn vị bàn giao trả seal thanh lý:</label>
                     <select id="bulkRecallFrom">${opts}</select>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label>Cán bộ tiếp nhận:</label>
-                    <input type="text" id="bulkRecallReceiver" value="${currentUser === 'admin' ? 'Admin KV4' : 'Cán bộ Thủ tục KV4'}" />
+                    <label>Cán bộ tiếp nhận (Văn phòng GSKS):</label>
+                    <input type="text" id="bulkRecallReceiver" value="${currentUser === 'admin' ? 'Admin KV4' : 'Cán bộ Văn phòng GSKS'}" />
                 </div>
             `;
-            showModal('Thu Hồi Hàng Loạt Seal Thanh Lý', body, () => {
+            showModal('Thu Hồi Hàng Loạt Seal Thanh Lý Về VP GSKS', body, () => {
                 const fromLoc = document.getElementById('bulkRecallFrom').value;
-                const receiver = document.getElementById('bulkRecallReceiver').value.trim() || 'Cán bộ Thủ tục KV4';
+                const receiver = document.getElementById('bulkRecallReceiver').value.trim() || 'Cán bộ Văn phòng GSKS';
                 const targetSeals = seals.filter(s => (s.isLiquidation || LIQUIDATION_2246[s.id]) && s.location === fromLoc);
                 if (targetSeals.length === 0) { closeModal(); return; }
 
                 const ids = targetSeals.map(s => s.id);
-                targetSeals.forEach(s => s.location = 'Bộ phận Thủ tục HHXNK');
+                targetSeals.forEach(s => s.location = 'Văn phòng GSKS');
 
                 const now = new Date();
                 const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')} ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
@@ -2023,7 +2031,7 @@
                     id: 'TXN-' + Date.now(),
                     time: timeStr,
                     from: fromLoc,
-                    to: 'Bộ phận Thủ tục HHXNK',
+                    to: 'Văn phòng GSKS',
                     qty: ids.length,
                     receiver: receiver + ' (Thu hồi TL QĐ 2246)',
                     details: ids.join(', ')
@@ -2220,7 +2228,7 @@
                     notFoundSeals.push(inputId);
                 } else if (seal.location !== from) {
                     wrongLocationSeals.push(`${inputId} (Đang ở: ${seal.location})`);
-                } else if ((seal.isLiquidation || LIQUIDATION_2246[seal.id]) && to !== 'Bộ phận Thủ tục HHXNK') {
+                } else if ((seal.isLiquidation || LIQUIDATION_2246[seal.id]) && (seal.location === 'Bộ phận Thủ tục HHXNK' || to !== 'Văn phòng GSKS')) {
                     liqBlockedSeals.push(seal.id);
                 } else {
                     sealsToMove.push(seal);
@@ -2242,7 +2250,7 @@
             }
 
             if (liqBlockedSeals.length > 0) {
-                msgEl.innerHTML = iconError + `<span><b>CHẶN ĐIỀU CHUYỂN:</b> Các seal <b>${liqBlockedSeals.join(', ')}</b> thuộc danh mục thanh lý <b>QĐ 2246/QĐ-HQKV2</b>, chỉ được thu hồi về <b>Bộ phận Thủ tục HHXNK</b>!</span>`;
+                msgEl.innerHTML = iconError + `<span><b>CHẶN ĐIỀU CHUYỂN:</b> Các seal <b>${liqBlockedSeals.join(', ')}</b> thuộc danh mục thanh lý <b>QĐ 2246/QĐ-HQKV2</b> (Seal ở Kho/ICD chỉ được thu hồi về <b>Văn phòng GSKS</b>; seal ở <b>Bộ phận Thủ tục HHXNK</b> giữ nguyên tại chỗ)!</span>`;
                 msgEl.classList.add('error');
                 msgEl.style.display = 'flex';
                 return;
