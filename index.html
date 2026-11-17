@@ -164,7 +164,7 @@
             font-size: 15px; 
             color: #ffffff;
             border-radius: 8px;
-            transition: all 0.2s;
+            transition: none;
         }
         .login-box input:focus {
             border-color: #38bdf8;
@@ -190,7 +190,7 @@
             flex-direction: column; 
             flex-shrink: 0; 
             z-index: 50;
-            will-change: transform;
+            
             transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
             border-right: 1px solid rgba(56, 189, 248, 0.16);
             box-shadow: 8px 0 30px rgba(0, 0, 0, 0.25);
@@ -207,9 +207,7 @@
         
         .sidebar-header { 
             padding: 26px 18px 20px; 
-            background: rgba(7, 13, 25, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: #070d19;
             text-align: center; 
             border-bottom: 1px solid rgba(255,255,255,0.06); 
         }
@@ -224,7 +222,7 @@
             background-color: #10b981;
             border-radius: 50%;
             box-shadow: 0 0 8px #10b981;
-            animation: pulseDot 2s infinite ease-in-out;
+            /* animation removed */
         }
         @keyframes pulseDot {
             0%, 100% { opacity: 0.4; transform: scale(0.9); }
@@ -249,7 +247,7 @@
             display: flex; align-items: center; justify-content: space-between; padding: 12px 14px;
             color: #94a3b8; text-decoration: none; 
             border-radius: 10px; cursor: pointer; 
-            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: none;
             font-size: 14px; font-weight: 500; 
             border: 1px solid transparent;
             position: relative;
@@ -262,7 +260,7 @@
         }
         .nav-item svg { 
             margin-right: 12px; flex-shrink: 0; color: #64748b; 
-            transition: all 0.22s ease; 
+            transition: none; 
         }
         .nav-badge {
             font-size: 11px; font-weight: 800; font-family: var(--font-mono);
@@ -275,9 +273,9 @@
             background: rgba(14, 165, 233, 0.08); 
             color: #f1f5f9; 
             border-color: rgba(56, 189, 248, 0.2);
-            transform: translateX(3px);
+            
         }
-        .nav-item:hover svg { color: #38bdf8; transform: scale(1.08); }
+        .nav-item:hover svg { color: #38bdf8; }
         
         .nav-item.active { 
             background: linear-gradient(90deg, rgba(14, 165, 233, 0.2) 0%, rgba(30, 58, 138, 0.25) 100%);
@@ -296,7 +294,7 @@
         }
         .nav-item.active svg { 
             color: #38bdf8; 
-            filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6)); 
+             
         }
         
         .sidebar-footer { 
@@ -316,7 +314,7 @@
             font-size: 12px; 
             font-weight: 700; 
             width: 100%; 
-            transition: all 0.2s;
+            transition: none;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -329,9 +327,7 @@
         /* --- MAIN CONTENT & TOPBAR --- */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; width: 100%; }
         .header { 
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: #ffffff;
             padding: 14px 28px; 
             box-shadow: var(--shadow-sm); 
             display: flex; 
@@ -391,11 +387,10 @@
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            transition: transform 0.22s ease, box-shadow 0.22s ease;
+            transition: none;
         }
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-border);
         }
         .stat-card::before {
             content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
@@ -466,7 +461,7 @@
             width: 100%; height: 8px; background: #f3e8ff; border-radius: 99px; overflow: hidden; margin-top: 6px;
         }
         .progress-fill {
-            height: 100%; background: linear-gradient(90deg, #9333ea, #10b981); border-radius: 99px; transition: width 0.4s ease;
+            height: 100%; background: linear-gradient(90deg, #9333ea, #10b981); border-radius: 99px; transition: none;
         }
 
         /* --- HỘP CHỈ ĐẠO ĐIỀU HÀNH --- */
@@ -513,14 +508,12 @@
             display: flex; justify-content: space-between; align-items: center; 
             padding: 13px 16px; border: 1px solid var(--border); 
             border-radius: var(--radius-md); background: var(--bg-surface); 
-            transition: all 0.2s ease;
+            transition: none;
             position: relative;
         }
         .list-item:hover { 
             border-color: var(--primary); 
             background: #f8fafc; 
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-sm);
         }
         .node-name {
             display: flex; align-items: center; gap: 10px;
@@ -538,7 +531,7 @@
         .filter-pill {
             padding: 6px 14px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
             background: var(--bg-subtle); color: var(--text-main); border: 1px solid var(--border-strong);
-            cursor: pointer; transition: all 0.18s;
+            cursor: pointer; transition: none;
         }
         .filter-pill:hover { background: #e2e8f0; color: var(--navy-dark); }
         .filter-pill.active { background: var(--navy-dark); color: white; border-color: var(--navy-dark); }
@@ -606,7 +599,7 @@
         select, input, textarea { 
             width: 100%; padding: 11px 14px; border: 1px solid var(--border-strong); 
             border-radius: var(--radius-md); font-size: 14px; outline: none; 
-            background: var(--bg-surface); color: var(--text-dark); transition: all 0.18s;
+            background: var(--bg-surface); color: var(--text-dark); transition: none;
         }
         select:focus, input:focus, textarea:focus { 
             border-color: var(--primary); 
@@ -617,29 +610,29 @@
         /* --- BUTTONS --- */
         .btn { 
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+            background-color: #0284c7; 
             color: white; border: 1px solid #0369a1; padding: 11px 22px; 
             font-size: 14px; font-weight: 700; border-radius: var(--radius-md); 
-            cursor: pointer; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25); transition: all 0.2s; 
+            cursor: pointer; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25); transition: none; 
         }
-        .btn:hover { background: linear-gradient(135deg, #0369a1 0%, #075985 100%); transform: translateY(-1px); }
-        .btn:active { transform: translateY(0); }
+        .btn:hover { background-color: #0369a1; }
+        
         .btn-secondary { background: var(--bg-surface); color: var(--text-dark); border: 1px solid var(--border-strong); box-shadow: var(--shadow-sm);}
         .btn-secondary:hover { background: var(--bg-subtle); color: var(--navy-dark); }
         .btn-purple {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+            background-color: #9333ea;
             color: white; border: 1px solid #7e22ce; padding: 9px 16px;
             font-size: 13px; font-weight: 700; border-radius: var(--radius-md);
             cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-            box-shadow: 0 2px 6px rgba(147, 51, 234, 0.25); transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(147, 51, 234, 0.25); transition: none;
         }
-        .btn-purple:hover { background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%); transform: translateY(-1px); }
+        .btn-purple:hover { background-color: #7e22ce; }
 
         .msg { padding: 14px 16px; border-radius: var(--radius-md); font-size: 13.5px; margin-bottom: 20px; display: none; font-weight: 600; align-items: center; gap: 10px;}
         .msg.error { display: flex; background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
         .msg.success { display: flex; background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
 
-        .action-btn { padding: 6px 11px; border: 1px solid transparent; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; transition: all 0.18s; white-space: nowrap;}
+        .action-btn { padding: 6px 11px; border: 1px solid transparent; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; transition: none; white-space: nowrap;}
         .action-btn.edit { background: var(--bg-subtle); color: var(--primary-hover); border-color: var(--border-strong);}
         .action-btn.edit:hover { background: var(--primary-light); border-color: var(--primary-border); }
         .action-btn.recall { background: var(--liq-bg); color: var(--liq); border-color: var(--liq-border);}
@@ -788,7 +781,7 @@
                 </div>
             </div>
             <div class="sidebar-footer">
-                TELEMETRY SEAL SYSTEM v8.9<br>Phân quyền khóa hồ sơ QĐ 2246
+                TELEMETRY SEAL SYSTEM v9.3<br>Phân quyền khóa hồ sơ QĐ 2246
                 <button class="btn-logout" onclick="handleLogout()">Đăng Xuất Phiên</button>
             </div>
         </div>
@@ -843,7 +836,6 @@
     <script>
         const NL = String.fromCharCode(10);
         const SPLIT_REGEX = new RegExp('[' + NL + ',;]+');
-
         // --- HỆ THỐNG XÁC THỰC (AUTH) + REMEMBER USER ---
         const USERS = {
             'admin': '111213', // Toàn quyền (Sửa 56 seal thanh lý, Xóa & Hoàn tác)
@@ -1017,7 +1009,7 @@
 14 | HCM824 | ICD PHƯỚC LONG 1 | 000902962 | 2020
 15 | HCM825 | ICD PHƯỚC LONG 1 | 000902887 | 2020
 16 | HCM826 | ICD PHƯỚC LONG 3 | 000902920 | 2020
-17 | HCM827 | ICD PHƯỚC LONG 3 | 000902892 | 2020
+17 | HCM827 | ICD TANAMEXCO | 000902892 | 2020
 18 | HCM828 | ICD PHƯỚC LONG 3 | 000902916 | 2020
 19 | HCM829 | ICD PHƯỚC LONG 3 | 000902913 | 2020
 20 | HCM830 | ICD PHƯỚC LONG 3 | 000902926 | 2020
@@ -1053,7 +1045,7 @@
 50 | HCM860 | KHO TRANSIMEX | 000968533 | 2022
 51 | HCM861 | KHO TRANSIMEX | 000968603 | 2022
 52 | HCM862 | KHO TRANSIMEX | 000968592 | 2022
-53 | HCM863 | KHO TRANSIMEX | 000968583 | 2022
+53 | HCM863 | ICD SOTRANS | 000968583 | 2022
 54 | HCM864 | KHO TRANSIMEX | 000968550 | 2022
 55 | HCM865 | KHO TRANSIMEX | 000968563 | 2022
 56 | HCM866 | KHO TRANSIMEX | 000968571 | 2022
@@ -1075,7 +1067,7 @@
 72 | HCM882 | KHO TRANSIMEX | 000968547 | 2022
 73 | HCM883 | KHO TRANSIMEX | 000968544 | 2022
 74 | HCM884 | KHO TRANSIMEX | 000968556 | 2022
-75 | HCM885 | KHO TRANSIMEX | 000968587 | 2022
+75 | HCM885 | ICD TANAMEXCO | 000968587 | 2022
 76 | HCM886 | ICD PHƯỚC LONG 3 | 000968581 | 2022
 77 | HCM887 | ICD PHƯỚC LONG 3 | 000968535 | 2022
 78 | HCM888 | ICD PHƯỚC LONG 3 | 000968530 | 2022
@@ -1091,18 +1083,18 @@
 88 | HCM898 | ICD PHƯỚC LONG 3 | 000968600 | 2022
 89 | HCM899 | ICD PHƯỚC LONG 3 | 000968561 | 2022
 90 | HCM900 | ICD PHƯỚC LONG 3 | 000968628 | 2022
-91 | HCM001 | ICD TÂY NAM | 000968624 | 2022
+91 | HCM001 | ICD PHƯỚC LONG 3 | 000968624 | 2022
 92 | HCM002 | ICD PHƯỚC LONG 3 | 000968618 | 2022
 93 | HCM003 | ICD PHƯỚC LONG 3 | 000968634 | 2022
 94 | HCM004 | ICD TRANSIMEX | 000968633 | 2022
 95 | HCM005 | ICD PHƯỚC LONG 3 | 000968612 | 2022
 96 | HCM006 | ICD TRANSIMEX | 000968615 | 2022
 97 | HCM007 | ICD PHƯỚC LONG 3 | 000968626 | 2022
-98 | HCM008 | ICD SOTRANS | 000968616 | 2022
+98 | HCM008 | KHO TRANSIMEX | 000968616 | 2022
 99 | HCM009 | KHO TRANSIMEX | 000968632 | 2022
 100 | HCM010 | ICD TRANSIMEX | 000968595 | 2022
 101 | HCM011 | ICD PHƯỚC LONG 3 | 000968593 | 2022
-102 | HCM012 | ICD TÂY NAM | 000968610 | 2022
+102 | HCM012 | KHO TRANSIMEX | 000968610 | 2022
 103 | HCM013 | ICD PHƯỚC LONG 3 | 000968606 | 2022
 104 | HCM014 | ICD TRANSIMEX | 000968631 | 2022
 105 | HCM015 | ICD PHƯỚC LONG 3 | 000968607 | 2022
@@ -1114,7 +1106,7 @@
 111 | HCM036 | ICD PHƯỚC LONG 3 | 000968596 | 2022
 112 | HCM037 | ICD PHƯỚC LONG 3 | 000968554 | 2022
 113 | HCM038 | ICD SOTRANS | 000968582 | 2022
-114 | HCM039 | ICD TÂY NAM | 000968532 | 2022
+114 | HCM039 | ICD PHƯỚC LONG 3 | 000968532 | 2022
 115 | HCM040 | ICD PHƯỚC LONG 3 | 000968545 | 2022
 116 | HCM041 | ICD PHƯỚC LONG 3 | 000968569 | 2022
 117 | HCM042 | KHO TRANSIMEX | 000968601 | 2022
@@ -1122,10 +1114,10 @@
 119 | HCM045 | ICD PHƯỚC LONG 3 | 000968548 | 2022
 120 | HCM046 | ICD TRANSIMEX | 000968585 | 2022
 121 | HCM047 | KHO TRANSIMEX | 000968549 | 2022
-122 | HCM049 | ICD TÂY NAM | 000968543 | 2022
+122 | HCM049 | ICD PHƯỚC LONG 3 | 000968543 | 2022
 123 | HCM055 | KHO TRANSIMEX | 000968625 | 2022
 124 | HCM056 | ICD SOTRANS | 000968609 | 2022
-125 | HCM057 | ICD TÂY NAM | 000968622 | 2022
+125 | HCM057 | ICD PHƯỚC LONG 3 | 000968622 | 2022
 126 | HCM019 | ICD PHƯỚC LONG 3 | 000968597 | 2022
 127 | HCM023 | ICD PHƯỚC LONG 3 | 000968620 | 2022
 128 | HCM026 | ICD SOTRANS | 000968630 | 2022
@@ -1139,33 +1131,277 @@
 136 | HCM976 | KHO TRANSIMEX | 000968657 | 2022
 137 | HCM977 | KHO TRANSIMEX | 000968619 | 2022
 138 | HCM978 | KHO TRANSIMEX | 000968650 | 2022
-139 | HCM979 | ICD TÂY NAM | 000968674 | 2022
-140 | HCM980 | ICD TÂY NAM | 000968668 | 2022
-141 | HCM044 | Bộ phận Thủ tục HHXNK | 000902889 | 2020
-142 | HCM048 | Bộ phận Thủ tục HHXNK | 000902899 | 2020
-143 | HCM050 | Bộ phận Thủ tục HHXNK | 000902896 | 2020
-144 | HCM051 | Bộ phận Thủ tục HHXNK | 000902924 | 2020
-145 | HCM052 | Bộ phận Thủ tục HHXNK | 000902923 | 2020
-146 | HCM053 | Bộ phận Thủ tục HHXNK | 000902884 | 2020
-147 | HCM054 | Bộ phận Thủ tục HHXNK | 000902893 | 2020
-148 | HCM058 | Bộ phận Thủ tục HHXNK | 000902900 | 2020
-149 | HCM059 | Bộ phận Thủ tục HHXNK | 000902904 | 2020
-150 | HCM060 | Bộ phận Thủ tục HHXNK | 000902919 | 2020
-151 | HCM801 | Bộ phận Thủ tục HHXNK | 000902890 | 2020
-152 | HCM802 | Bộ phận Thủ tục HHXNK | 000902911 | 2020
-153 | HCM803 | Bộ phận Thủ tục HHXNK | 000902894 | 2020
-154 | HCM804 | Bộ phận Thủ tục HHXNK | 000902928 | 2020
-155 | HCM805 | Bộ phận Thủ tục HHXNK | 000902930 | 2020
-156 | HCM806 | Bộ phận Thủ tục HHXNK | 000902905 | 2020
-157 | HCM807 | Bộ phận Thủ tục HHXNK | 000902918 | 2020
-158 | HCM808 | Bộ phận Thủ tục HHXNK | 000902917 | 2020
-159 | HCM809 | Bộ phận Thủ tục HHXNK | 000902932 | 2020
-160 | HCM810 | Bộ phận Thủ tục HHXNK | 000902925 | 2020`;
+139 | HCM979 | KHO TRANSIMEX | 000968674 | 2022
+140 | HCM980 | KHO TRANSIMEX | 000968668 | 2022
+141 | HCM044 | Bộ phận Thủ tục HHXNK | 000902889 | 2022
+142 | HCM048 | Bộ phận Thủ tục HHXNK | 000902899 | 2022
+143 | HCM050 | Bộ phận Thủ tục HHXNK | 000902896 | 2022
+144 | HCM051 | Bộ phận Thủ tục HHXNK | 000902924 | 2022
+145 | HCM052 | Bộ phận Thủ tục HHXNK | 000902923 | 2022
+146 | HCM053 | Bộ phận Thủ tục HHXNK | 000902884 | 2022
+147 | HCM054 | Bộ phận Thủ tục HHXNK | 000902893 | 2022
+148 | HCM058 | Bộ phận Thủ tục HHXNK | 000902900 | 2022
+149 | HCM059 | Bộ phận Thủ tục HHXNK | 000902904 | 2022
+150 | HCM060 | Bộ phận Thủ tục HHXNK | 000902919 | 2022
+151 | HCM801 | Bộ phận Thủ tục HHXNK | 000902890 | 2022
+152 | HCM802 | Bộ phận Thủ tục HHXNK | 000902911 | 2022
+153 | HCM803 | Bộ phận Thủ tục HHXNK | 000902894 | 2022
+154 | HCM804 | Bộ phận Thủ tục HHXNK | 000902928 | 2022
+155 | HCM805 | Bộ phận Thủ tục HHXNK | 000902930 | 2022
+156 | HCM806 | Bộ phận Thủ tục HHXNK | 000902905 | 2022
+157 | HCM807 | Bộ phận Thủ tục HHXNK | 000902918 | 2022
+158 | HCM808 | Bộ phận Thủ tục HHXNK | 000902917 | 2022
+159 | HCM809 | Bộ phận Thủ tục HHXNK | 000902932 | 2022
+160 | HCM810 | Bộ phận Thủ tục HHXNK | 000902925 | 2022`;
 
-        // Đồng bộ trạng thái thanh lý QĐ 2246 & chuẩn hóa mã tài sản QLTS
-        function applyLiquidationMetadata(sealList) {
+        const LATEST_INVENTORY_SYNC_ID = 'sync_20261117_v2';
+        const INITIAL_IMPORTED_TRANSACTIONS = [
+            {
+                id: 'TXN-INIT-6',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'ICD TANAMEXCO',
+                to: 'KHO TRANSIMEX',
+                qty: 3,
+                receiver: 'Nhận bàn giao từ Tanamexco',
+                details: 'HCM012, HCM979, HCM980'
+            },
+            {
+                id: 'TXN-INIT-5',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'ICD TANAMEXCO',
+                to: 'ICD PHƯỚC LONG 3',
+                qty: 4,
+                receiver: 'Nhận bàn giao từ ICD Tanamexco',
+                details: 'HCM001, HCM039, HCM049, HCM057'
+            },
+            {
+                id: 'TXN-INIT-4',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'ICD SOTRANS',
+                to: 'KHO TRANSIMEX',
+                qty: 1,
+                receiver: 'Nhận bàn giao từ Sotrans',
+                details: 'HCM008'
+            },
+            {
+                id: 'TXN-INIT-3',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'Kho ngoại quan Transimex',
+                to: 'ICD TANAMEXCO',
+                qty: 1,
+                receiver: 'Nhận bàn giao từ KNQ Transimex',
+                details: 'HCM885'
+            },
+            {
+                id: 'TXN-INIT-2',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'KHO TRANSIMEX',
+                to: 'ICD SOTRANS',
+                qty: 1,
+                receiver: 'Nhận bàn giao từ Kho Transimex',
+                details: 'HCM863'
+            },
+            {
+                id: 'TXN-INIT-1',
+                time: 'Hồ sơ bàn giao (Kiểm kê)',
+                from: 'ICD PHƯỚC LONG 3',
+                to: 'ICD TANAMEXCO',
+                qty: 1,
+                receiver: 'Nhận bàn giao từ Phước Long 3',
+                details: 'HCM827'
+            }
+        ];
+        const LATEST_INVENTORY_MAP = {
+            "HCM811": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902885", year: "2020", note: "", sn: "", model: "" },
+            "HCM812": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902883", year: "2020", note: "", sn: "", model: "" },
+            "HCM813": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902922", year: "2020", note: "", sn: "", model: "" },
+            "HCM814": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902929", year: "2020", note: "", sn: "", model: "" },
+            "HCM815": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902864", year: "2020", note: "", sn: "", model: "" },
+            "HCM816": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902891", year: "2020", note: "", sn: "", model: "" },
+            "HCM817": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902910", year: "2020", note: "", sn: "", model: "" },
+            "HCM818": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902909", year: "2020", note: "", sn: "", model: "" },
+            "HCM819": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902895", year: "2020", note: "", sn: "", model: "" },
+            "HCM820": { location: "KHO CFS PHƯỚC LONG 3", assetCode: "000902906", year: "2020", note: "", sn: "", model: "" },
+            "HCM821": { location: "KHO TRANSIMEX", assetCode: "000902907", year: "2020", note: "", sn: "", model: "" },
+            "HCM822": { location: "KHO TRANSIMEX", assetCode: "000902886", year: "2020", note: "", sn: "", model: "" },
+            "HCM823": { location: "KHO TRANSIMEX", assetCode: "000902888", year: "2020", note: "", sn: "", model: "" },
+            "HCM824": { location: "ICD PHƯỚC LONG 1", assetCode: "000902962", year: "2020", note: "", sn: "", model: "" },
+            "HCM825": { location: "ICD PHƯỚC LONG 1", assetCode: "000902887", year: "2020", note: "", sn: "", model: "" },
+            "HCM826": { location: "ICD PHƯỚC LONG 3", assetCode: "000902920", year: "2020", note: "", sn: "", model: "" },
+            "HCM827": { location: "ICD TANAMEXCO", assetCode: "000902892", year: "2020", note: "", sn: "", model: "" },
+            "HCM828": { location: "ICD PHƯỚC LONG 3", assetCode: "000902916", year: "2020", note: "", sn: "", model: "" },
+            "HCM829": { location: "ICD PHƯỚC LONG 3", assetCode: "000902913", year: "2020", note: "", sn: "", model: "" },
+            "HCM830": { location: "ICD PHƯỚC LONG 3", assetCode: "000902926", year: "2020", note: "", sn: "", model: "" },
+            "HCM831": { location: "ICD PHƯỚC LONG 3", assetCode: "000902897", year: "2020", note: "", sn: "", model: "" },
+            "HCM832": { location: "ICD PHƯỚC LONG 3", assetCode: "000902915", year: "2020", note: "", sn: "", model: "" },
+            "HCM833": { location: "ICD PHƯỚC LONG 3", assetCode: "000902898", year: "2020", note: "", sn: "", model: "" },
+            "HCM834": { location: "ICD PHƯỚC LONG 3", assetCode: "000902931", year: "2020", note: "", sn: "", model: "" },
+            "HCM835": { location: "ICD PHƯỚC LONG 3", assetCode: "000902927", year: "2020", note: "", sn: "", model: "" },
+            "HCM836": { location: "ICD PHƯỚC LONG 3", assetCode: "000902921", year: "2020", note: "", sn: "", model: "" },
+            "HCM837": { location: "ICD PHƯỚC LONG 3", assetCode: "000902903", year: "2020", note: "", sn: "", model: "" },
+            "HCM838": { location: "ICD PHƯỚC LONG 3", assetCode: "000902908", year: "2020", note: "", sn: "", model: "" },
+            "HCM839": { location: "ICD PHƯỚC LONG 3", assetCode: "000902902", year: "2020", note: "", sn: "", model: "" },
+            "HCM840": { location: "ICD PHƯỚC LONG 3", assetCode: "000902901", year: "2020", note: "", sn: "", model: "" },
+            "HCM841": { location: "ICD PHƯỚC LONG 3", assetCode: "000968541", year: "2020", note: "", sn: "", model: "" },
+            "HCM842": { location: "ICD PHƯỚC LONG 3", assetCode: "000968551", year: "2020", note: "", sn: "", model: "" },
+            "HCM843": { location: "ICD PHƯỚC LONG 3", assetCode: "000968599", year: "2022", note: "", sn: "", model: "" },
+            "HCM844": { location: "ICD PHƯỚC LONG 3", assetCode: "000968574", year: "2022", note: "", sn: "", model: "" },
+            "HCM845": { location: "ICD PHƯỚC LONG 3", assetCode: "000968570", year: "2022", note: "", sn: "", model: "" },
+            "HCM846": { location: "ICD TRANSIMEX", assetCode: "000968539", year: "2022", note: "", sn: "", model: "" },
+            "HCM847": { location: "ICD TRANSIMEX", assetCode: "000968572", year: "2022", note: "", sn: "", model: "" },
+            "HCM848": { location: "ICD TRANSIMEX", assetCode: "000968598", year: "2022", note: "", sn: "", model: "" },
+            "HCM849": { location: "ICD TRANSIMEX", assetCode: "000968577", year: "2022", note: "", sn: "", model: "" },
+            "HCM850": { location: "ICD TRANSIMEX", assetCode: "000968580", year: "2022", note: "", sn: "", model: "" },
+            "HCM851": { location: "ICD TRANSIMEX", assetCode: "000968537", year: "2022", note: "", sn: "", model: "" },
+            "HCM852": { location: "ICD TRANSIMEX", assetCode: "000968584", year: "2022", note: "", sn: "", model: "" },
+            "HCM853": { location: "ICD TRANSIMEX", assetCode: "000968578", year: "2022", note: "", sn: "", model: "" },
+            "HCM854": { location: "ICD TRANSIMEX", assetCode: "000968546", year: "2022", note: "", sn: "", model: "" },
+            "HCM855": { location: "ICD TRANSIMEX", assetCode: "000968564", year: "2022", note: "", sn: "", model: "" },
+            "HCM856": { location: "KHO TRANSIMEX", assetCode: "000968559", year: "2022", note: "", sn: "", model: "" },
+            "HCM857": { location: "KHO TRANSIMEX", assetCode: "000968562", year: "2022", note: "", sn: "", model: "" },
+            "HCM858": { location: "KHO TRANSIMEX", assetCode: "000968591", year: "2022", note: "", sn: "", model: "" },
+            "HCM859": { location: "KHO TRANSIMEX", assetCode: "000968566", year: "2022", note: "", sn: "", model: "" },
+            "HCM860": { location: "KHO TRANSIMEX", assetCode: "000968533", year: "2022", note: "", sn: "", model: "" },
+            "HCM861": { location: "KHO TRANSIMEX", assetCode: "000968603", year: "2022", note: "", sn: "", model: "" },
+            "HCM862": { location: "KHO TRANSIMEX", assetCode: "000968592", year: "2022", note: "", sn: "", model: "" },
+            "HCM863": { location: "ICD SOTRANS", assetCode: "000968583", year: "2022", note: "", sn: "", model: "" },
+            "HCM864": { location: "KHO TRANSIMEX", assetCode: "000968550", year: "2022", note: "", sn: "", model: "" },
+            "HCM865": { location: "KHO TRANSIMEX", assetCode: "000968563", year: "2022", note: "", sn: "", model: "" },
+            "HCM866": { location: "KHO TRANSIMEX", assetCode: "000968571", year: "2022", note: "", sn: "", model: "" },
+            "HCM867": { location: "KHO TRANSIMEX", assetCode: "000968568", year: "2022", note: "", sn: "", model: "" },
+            "HCM868": { location: "KHO TRANSIMEX", assetCode: "000968540", year: "2022", note: "", sn: "", model: "" },
+            "HCM869": { location: "KHO TRANSIMEX", assetCode: "000968602", year: "2022", note: "", sn: "", model: "" },
+            "HCM870": { location: "KHO TRANSIMEX", assetCode: "000968575", year: "2022", note: "", sn: "", model: "" },
+            "HCM871": { location: "KHO TRANSIMEX", assetCode: "000968573", year: "2022", note: "", sn: "", model: "" },
+            "HCM872": { location: "KHO TRANSIMEX", assetCode: "000968534", year: "2022", note: "", sn: "", model: "" },
+            "HCM873": { location: "KHO TRANSIMEX", assetCode: "000968589", year: "2022", note: "", sn: "", model: "" },
+            "HCM874": { location: "KHO TRANSIMEX", assetCode: "000968558", year: "2022", note: "", sn: "", model: "" },
+            "HCM875": { location: "KHO TRANSIMEX", assetCode: "000968588", year: "2022", note: "", sn: "", model: "" },
+            "HCM876": { location: "KHO TRANSIMEX", assetCode: "000968542", year: "2022", note: "", sn: "", model: "" },
+            "HCM877": { location: "KHO TRANSIMEX", assetCode: "000968576", year: "2022", note: "", sn: "", model: "" },
+            "HCM878": { location: "KHO TRANSIMEX", assetCode: "000968579", year: "2022", note: "", sn: "", model: "" },
+            "HCM879": { location: "KHO TRANSIMEX", assetCode: "000968586", year: "2022", note: "", sn: "", model: "" },
+            "HCM880": { location: "KHO TRANSIMEX", assetCode: "000968565", year: "2022", note: "", sn: "", model: "" },
+            "HCM881": { location: "KHO TRANSIMEX", assetCode: "000968567", year: "2022", note: "", sn: "", model: "" },
+            "HCM882": { location: "KHO TRANSIMEX", assetCode: "000968547", year: "2022", note: "", sn: "", model: "" },
+            "HCM883": { location: "KHO TRANSIMEX", assetCode: "000968544", year: "2022", note: "", sn: "", model: "" },
+            "HCM884": { location: "KHO TRANSIMEX", assetCode: "000968556", year: "2022", note: "", sn: "", model: "" },
+            "HCM885": { location: "ICD TANAMEXCO", assetCode: "000968587", year: "2022", note: "", sn: "", model: "" },
+            "HCM886": { location: "ICD PHƯỚC LONG 3", assetCode: "000968581", year: "2022", note: "", sn: "", model: "" },
+            "HCM887": { location: "ICD PHƯỚC LONG 3", assetCode: "000968535", year: "2022", note: "", sn: "", model: "" },
+            "HCM888": { location: "ICD PHƯỚC LONG 3", assetCode: "000968530", year: "2022", note: "", sn: "", model: "" },
+            "HCM889": { location: "ICD PHƯỚC LONG 3", assetCode: "000968538", year: "2022", note: "", sn: "", model: "" },
+            "HCM890": { location: "ICD PHƯỚC LONG 3", assetCode: "000968553", year: "2022", note: "", sn: "", model: "" },
+            "HCM891": { location: "ICD PHƯỚC LONG 3", assetCode: "000968560", year: "2022", note: "", sn: "", model: "" },
+            "HCM892": { location: "ICD PHƯỚC LONG 3", assetCode: "000968557", year: "2022", note: "", sn: "", model: "" },
+            "HCM893": { location: "ICD PHƯỚC LONG 3", assetCode: "000968531", year: "2022", note: "", sn: "", model: "" },
+            "HCM894": { location: "ICD PHƯỚC LONG 3", assetCode: "000968555", year: "2022", note: "", sn: "", model: "" },
+            "HCM895": { location: "ICD PHƯỚC LONG 3", assetCode: "000968536", year: "2022", note: "", sn: "", model: "" },
+            "HCM896": { location: "ICD PHƯỚC LONG 3", assetCode: "000968552", year: "2022", note: "", sn: "", model: "" },
+            "HCM897": { location: "ICD PHƯỚC LONG 3", assetCode: "000968590", year: "2022", note: "", sn: "", model: "" },
+            "HCM898": { location: "ICD PHƯỚC LONG 3", assetCode: "000968600", year: "2022", note: "", sn: "", model: "" },
+            "HCM899": { location: "ICD PHƯỚC LONG 3", assetCode: "000968561", year: "2022", note: "", sn: "", model: "" },
+            "HCM900": { location: "ICD PHƯỚC LONG 3", assetCode: "000968628", year: "2022", note: "", sn: "", model: "" },
+            "HCM001": { location: "ICD PHƯỚC LONG 3", assetCode: "000968624", year: "2022", note: "", sn: "", model: "" },
+            "HCM002": { location: "ICD PHƯỚC LONG 3", assetCode: "000968618", year: "2022", note: "", sn: "", model: "" },
+            "HCM003": { location: "ICD PHƯỚC LONG 3", assetCode: "000968634", year: "2022", note: "", sn: "", model: "" },
+            "HCM004": { location: "ICD TRANSIMEX", assetCode: "000968633", year: "2022", note: "", sn: "", model: "" },
+            "HCM005": { location: "ICD PHƯỚC LONG 3", assetCode: "000968612", year: "2022", note: "", sn: "", model: "" },
+            "HCM006": { location: "ICD TRANSIMEX", assetCode: "000968615", year: "2022", note: "", sn: "", model: "" },
+            "HCM007": { location: "ICD PHƯỚC LONG 3", assetCode: "000968626", year: "2022", note: "", sn: "", model: "" },
+            "HCM008": { location: "KHO TRANSIMEX", assetCode: "000968616", year: "2022", note: "", sn: "", model: "" },
+            "HCM009": { location: "KHO TRANSIMEX", assetCode: "000968632", year: "2022", note: "", sn: "", model: "" },
+            "HCM010": { location: "ICD TRANSIMEX", assetCode: "000968595", year: "2022", note: "", sn: "", model: "" },
+            "HCM011": { location: "ICD PHƯỚC LONG 3", assetCode: "000968593", year: "2022", note: "", sn: "", model: "" },
+            "HCM012": { location: "KHO TRANSIMEX", assetCode: "000968610", year: "2022", note: "", sn: "", model: "" },
+            "HCM013": { location: "ICD PHƯỚC LONG 3", assetCode: "000968606", year: "2022", note: "", sn: "", model: "" },
+            "HCM014": { location: "ICD TRANSIMEX", assetCode: "000968631", year: "2022", note: "", sn: "", model: "" },
+            "HCM015": { location: "ICD PHƯỚC LONG 3", assetCode: "000968607", year: "2022", note: "", sn: "", model: "" },
+            "HCM031": { location: "ICD PHƯỚC LONG 3", assetCode: "000968617", year: "2022", note: "", sn: "", model: "" },
+            "HCM032": { location: "KHO TRANSIMEX", assetCode: "000968614", year: "2022", note: "", sn: "", model: "" },
+            "HCM033": { location: "ICD PHƯỚC LONG 3", assetCode: "000968605", year: "2022", note: "", sn: "", model: "" },
+            "HCM034": { location: "ICD SOTRANS", assetCode: "000968594", year: "2022", note: "", sn: "", model: "" },
+            "HCM035": { location: "ICD PHƯỚC LONG 3", assetCode: "000968611", year: "2022", note: "", sn: "", model: "" },
+            "HCM036": { location: "ICD PHƯỚC LONG 3", assetCode: "000968596", year: "2022", note: "", sn: "", model: "" },
+            "HCM037": { location: "ICD PHƯỚC LONG 3", assetCode: "000968554", year: "2022", note: "", sn: "", model: "" },
+            "HCM038": { location: "ICD SOTRANS", assetCode: "000968582", year: "2022", note: "", sn: "", model: "" },
+            "HCM039": { location: "ICD PHƯỚC LONG 3", assetCode: "000968532", year: "2022", note: "", sn: "", model: "" },
+            "HCM040": { location: "ICD PHƯỚC LONG 3", assetCode: "000968545", year: "2022", note: "", sn: "", model: "" },
+            "HCM041": { location: "ICD PHƯỚC LONG 3", assetCode: "000968569", year: "2022", note: "", sn: "", model: "" },
+            "HCM042": { location: "KHO TRANSIMEX", assetCode: "000968601", year: "2022", note: "", sn: "", model: "" },
+            "HCM043": { location: "ICD PHƯỚC LONG 3", assetCode: "000968529", year: "2022", note: "", sn: "", model: "" },
+            "HCM045": { location: "ICD PHƯỚC LONG 3", assetCode: "000968548", year: "2022", note: "", sn: "", model: "" },
+            "HCM046": { location: "ICD TRANSIMEX", assetCode: "000968585", year: "2022", note: "", sn: "", model: "" },
+            "HCM047": { location: "KHO TRANSIMEX", assetCode: "000968549", year: "2022", note: "", sn: "", model: "" },
+            "HCM049": { location: "ICD PHƯỚC LONG 3", assetCode: "000968543", year: "2022", note: "", sn: "", model: "" },
+            "HCM055": { location: "KHO TRANSIMEX", assetCode: "000968625", year: "2022", note: "", sn: "", model: "" },
+            "HCM056": { location: "ICD SOTRANS", assetCode: "000968609", year: "2022", note: "", sn: "", model: "" },
+            "HCM057": { location: "ICD PHƯỚC LONG 3", assetCode: "000968622", year: "2022", note: "", sn: "", model: "" },
+            "HCM019": { location: "ICD PHƯỚC LONG 3", assetCode: "000968597", year: "2022", note: "", sn: "", model: "" },
+            "HCM023": { location: "ICD PHƯỚC LONG 3", assetCode: "000968620", year: "2022", note: "", sn: "", model: "" },
+            "HCM026": { location: "ICD SOTRANS", assetCode: "000968630", year: "2022", note: "", sn: "", model: "" },
+            "HCM028": { location: "ICD TRANSIMEX", assetCode: "000968604", year: "2022", note: "", sn: "", model: "" },
+            "HCM030": { location: "ICD TRANSIMEX", assetCode: "000968627", year: "2022", note: "", sn: "", model: "" },
+            "HCM971": { location: "ICD PHƯỚC LONG 3", assetCode: "000968685", year: "2022", note: "", sn: "", model: "" },
+            "HCM972": { location: "ICD PHƯỚC LONG 3", assetCode: "000968679", year: "2022", note: "", sn: "", model: "" },
+            "HCM973": { location: "ICD PHƯỚC LONG 3", assetCode: "000968686", year: "2022", note: "", sn: "", model: "" },
+            "HCM974": { location: "ICD PHƯỚC LONG 3", assetCode: "000968675", year: "2022", note: "", sn: "", model: "" },
+            "HCM975": { location: "ICD PHƯỚC LONG 3", assetCode: "000968621", year: "2022", note: "", sn: "", model: "" },
+            "HCM976": { location: "KHO TRANSIMEX", assetCode: "000968657", year: "2022", note: "", sn: "", model: "" },
+            "HCM977": { location: "KHO TRANSIMEX", assetCode: "000968619", year: "2022", note: "", sn: "", model: "" },
+            "HCM978": { location: "KHO TRANSIMEX", assetCode: "000968650", year: "2022", note: "", sn: "", model: "" },
+            "HCM979": { location: "KHO TRANSIMEX", assetCode: "000968674", year: "2022", note: "", sn: "", model: "" },
+            "HCM980": { location: "KHO TRANSIMEX", assetCode: "000968668", year: "2022", note: "", sn: "", model: "" },
+            "HCM044": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902889", year: "2022", note: "Smart Lock KT181 | S/N: 7581203769 (VIỆT NAM)", sn: "7581203769", model: "Smart Lock KT181" },
+            "HCM048": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902899", year: "2022", note: "Smart Lock KT181 | S/N: 7581204684 (China)", sn: "7581204684", model: "Smart Lock KT181" },
+            "HCM050": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902896", year: "2022", note: "Smart Lock KT181 | S/N: 7581204889 (China)", sn: "7581204889", model: "Smart Lock KT181" },
+            "HCM051": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902924", year: "2022", note: "Smart Lock KT181 | S/N: 7581203124 (China)", sn: "7581203124", model: "Smart Lock KT181" },
+            "HCM052": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902923", year: "2022", note: "Smart Lock KT181 | S/N: 7581204626 (China)", sn: "7581204626", model: "Smart Lock KT181" },
+            "HCM053": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902884", year: "2022", note: "Smart Lock KT181 | S/N: 7581203135 (China)", sn: "7581203135", model: "Smart Lock KT181" },
+            "HCM054": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902893", year: "2022", note: "Smart Lock KT181 | S/N: 7581204428 (China)", sn: "7581204428", model: "Smart Lock KT181" },
+            "HCM058": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902900", year: "2022", note: "Smart Lock KT181 | S/N: 7581204427 (China)", sn: "7581204427", model: "Smart Lock KT181" },
+            "HCM059": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902904", year: "2022", note: "Smart Lock KT181 | S/N: 7581205009 (China)", sn: "7581205009", model: "Smart Lock KT181" },
+            "HCM060": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902919", year: "2022", note: "Smart Lock KT181 | S/N: 7581205018 (China)", sn: "7581205018", model: "Smart Lock KT181" },
+            "HCM801": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902890", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181604657 (China)", sn: "8181604657", model: "Smart Lock KL191-SL" },
+            "HCM802": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902911", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181602463 (China)", sn: "8181602463", model: "Smart Lock KL191-SL" },
+            "HCM803": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902894", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181600286 (China)", sn: "8181600286", model: "Smart Lock KL191-SL" },
+            "HCM804": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902928", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181605029 (China)", sn: "8181605029", model: "Smart Lock KL191-SL" },
+            "HCM805": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902930", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181600610 (China)", sn: "8181600610", model: "Smart Lock KL191-SL" },
+            "HCM806": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902905", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181604711 (China)", sn: "8181604711", model: "Smart Lock KL191-SL" },
+            "HCM807": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902918", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181604981 (China)", sn: "8181604981", model: "Smart Lock KL191-SL" },
+            "HCM808": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902917", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181603579 (China)", sn: "8181603579", model: "Smart Lock KL191-SL" },
+            "HCM809": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902932", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181605003 (China)", sn: "8181605003", model: "Smart Lock KL191-SL" },
+            "HCM810": { location: "Bộ phận Thủ tục HHXNK", assetCode: "000902925", year: "2022", note: "Smart Lock KL191-SL | S/N: 8181604270 (China)", sn: "8181604270", model: "Smart Lock KL191-SL" },
+        };
+
+        // Đồng bộ danh sách kiểm kê mới nhất (ICD + Đội TTHHXNK) & trạng thái thanh lý QĐ 2246
+        function applyLiquidationMetadata(sealList, markSynced = false) {
             let changed = false;
+            const alreadySynced = localStorage.getItem('seal_inventory_sync_version') === LATEST_INVENTORY_SYNC_ID;
+            const doSyncLoc = !alreadySynced;
+
             sealList.forEach(s => {
+                const inv = LATEST_INVENTORY_MAP[s.id];
+                if (inv) {
+                    if (doSyncLoc && s.location !== inv.location) {
+                        s.location = inv.location;
+                        changed = true;
+                    }
+                    if (inv.sn && s.sn !== inv.sn) {
+                        s.sn = inv.sn;
+                        s.model = inv.model;
+                        changed = true;
+                    }
+                    if (inv.note && (!s.details || !s.details.includes(inv.note))) {
+                        s.details = s.details ? `${inv.note} | ${s.details}` : inv.note;
+                        changed = true;
+                    }
+                    if (!LIQUIDATION_2246[s.id] && inv.year && s.year !== inv.year) {
+                        s.year = inv.year;
+                        changed = true;
+                    }
+                }
+
                 const liqInfo = LIQUIDATION_2246[s.id];
                 if (liqInfo) {
                     if (!s.isLiquidation || s.assetCode !== liqInfo.assetCode || s.status !== 'Thanh lý - QĐ 2246') {
@@ -1175,20 +1411,52 @@
                         s.status = 'Thanh lý - QĐ 2246';
                         s.liqReason = liqInfo.reason;
                         s.remValue = liqInfo.remValue;
+                        const qdNote = `QĐ 2246/QĐ-HQKV2: ${liqInfo.reason}`;
                         if (!s.details || !s.details.includes('2246')) {
-                            s.details = `QĐ 2246/QĐ-HQKV2: ${liqInfo.reason}`;
+                            s.details = s.details ? `${s.details} | ${qdNote}` : qdNote;
                         }
                         changed = true;
                     }
                 }
             });
+
+            // Đồng bộ 6 biên bản nhận bàn giao có sẵn từ file kiểm kê vào Lịch sử giao dịch
+            const oldTransferNotedSeals = ['HCM827', 'HCM863', 'HCM885', 'HCM001', 'HCM008', 'HCM012', 'HCM039', 'HCM049', 'HCM057', 'HCM979', 'HCM980'];
+            sealList.forEach(s => {
+                if (oldTransferNotedSeals.includes(s.id) && s.details && s.details.includes('Nhận b')) {
+                    const cleaned = s.details.replace(/Nhận b(à|ào)n? giao[^|]*(\s*\|\s*)?/g, '').trim();
+                    if (cleaned !== s.details) {
+                        s.details = cleaned;
+                        changed = true;
+                    }
+                }
+            });
+
+            INITIAL_IMPORTED_TRANSACTIONS.forEach(initTxn => {
+                if (!transactions.some(t => t.id === initTxn.id)) {
+                    transactions.push(initTxn);
+                    changed = true;
+                }
+            });
+
+            if (markSynced && doSyncLoc && sealList.length > 0) {
+                try { localStorage.setItem('seal_inventory_sync_version', LATEST_INVENTORY_SYNC_ID); } catch (e) {}
+            }
             return changed;
+        }
+
+        let lastRenderedSignature = '';
+        let firebaseListenerAttached = false;
+
+        function computeDataSignature(sealList, txnList) {
+            return JSON.stringify({ s: sealList, t: txnList, tab: activeTab, filter: listFilterMode, user: currentUser });
         }
 
         function saveData() {
             try {
                 localStorage.setItem('sealData_v8', JSON.stringify(seals));
                 localStorage.setItem('txnData_v8', JSON.stringify(transactions));
+                lastRenderedSignature = computeDataSignature(seals, transactions);
             } catch (error) {
                 console.warn("Không thể lưu bộ nhớ cục bộ:", error);
             }
@@ -1207,19 +1475,22 @@
                 if (savedSeals && savedSeals !== '[]') {
                     seals = JSON.parse(savedSeals);
                     transactions = savedTxns ? JSON.parse(savedTxns) : [];
-                    applyLiquidationMetadata(seals);
+                    applyLiquidationMetadata(seals, false);
                     renderContent();
                 }
             } catch (error) {
                 console.warn("Không thể đọc bộ nhớ cục bộ:", error);
             }
 
+            if (firebaseListenerAttached) return;
+            firebaseListenerAttached = true;
+
             dbRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data && data.seals && data.seals.length > 0) {
                     seals = data.seals;
                     transactions = data.transactions || [];
-                    const updated = applyLiquidationMetadata(seals);
+                    const updated = applyLiquidationMetadata(seals, true);
                     
                     try {
                         localStorage.setItem('sealData_v8', JSON.stringify(seals));
@@ -1230,10 +1501,14 @@
                         saveData();
                     }
 
-                    if (activeTab === 'transfer') {
-                        updateTransferSelectOptions();
-                    } else {
-                        renderContent();
+                    const newSig = computeDataSignature(seals, transactions);
+                    if (newSig !== lastRenderedSignature) {
+                        if (activeTab === 'transfer') {
+                            updateTransferSelectOptions();
+                            lastRenderedSignature = newSig;
+                        } else {
+                            renderContent();
+                        }
                     }
                 } else {
                     if (seals.length === 0) {
@@ -1244,9 +1519,9 @@
                                 seals.push({ id: parts[1], assetCode: parts[3], location: parts[2], year: parts[4], status: 'Sẵn sàng', details: '' });
                             }
                         });
-                        applyLiquidationMetadata(seals);
-                        transactions = [];
+                        applyLiquidationMetadata(seals, true);
                         saveData();
+                        renderContent();
                     }
                 }
             });
@@ -1307,11 +1582,29 @@
             const liqBadge = document.getElementById('nav-liq-count');
             if (liqBadge) liqBadge.innerText = getLiquidationStats().total;
 
+            // Bảo toàn từ khóa đang gõ nếu bảng bị vẽ lại
+            const prevSearch = document.getElementById('searchInput') ? document.getElementById('searchInput').value : '';
+            const prevLiqSearch = document.getElementById('liqSearchInput') ? document.getElementById('liqSearchInput').value : '';
+
             if (activeTab === 'dashboard') container.innerHTML = renderDashboard();
-            else if (activeTab === 'list') container.innerHTML = renderList();
-            else if (activeTab === 'liquidation') container.innerHTML = renderLiquidationTab();
+            else if (activeTab === 'list') {
+                container.innerHTML = renderList();
+                if (prevSearch) {
+                    const sInput = document.getElementById('searchInput');
+                    if (sInput) { sInput.value = prevSearch; filterSeals(); }
+                }
+            }
+            else if (activeTab === 'liquidation') {
+                container.innerHTML = renderLiquidationTab();
+                if (prevLiqSearch) {
+                    const lInput = document.getElementById('liqSearchInput');
+                    if (lInput) { lInput.value = prevLiqSearch; filterLiqTable(); }
+                }
+            }
             else if (activeTab === 'transfer') container.innerHTML = renderTransfer();
             else if (activeTab === 'history') container.innerHTML = renderHistory();
+
+            lastRenderedSignature = computeDataSignature(seals, transactions);
         }
 
         function renderDashboard() {
@@ -1486,7 +1779,10 @@
                 rowsHtml += `
                     <tr class="${isLiq ? 'row-liq' : ''}" data-details="${seal.details || ''} ${isLiq ? 'thanh ly qd 2246' : ''}">
                         <td><span class="seal-tag ${isLiq ? 'liq-tag' : ''}">${seal.id}</span></td>
-                        <td style="color: var(--text-main); font-family: var(--font-mono); font-size: 13px; font-weight: 700;">${seal.assetCode || '<em style="color:#94a3b8; font-weight:normal;">Chưa cập nhật</em>'}</td>
+                        <td style="color: var(--text-main); font-family: var(--font-mono); font-size: 13px; font-weight: 700;">
+                            <div>${seal.assetCode || '<em style="color:#94a3b8; font-weight:normal;">Chưa cập nhật</em>'}</div>
+                            ${seal.sn ? `<div style="font-size:11px; color:#0284c7; font-weight:600;">S/N: ${seal.sn}</div>` : ''}
+                        </td>
                         <td style="font-weight: 600; color: var(--navy-dark);">${seal.location}</td>
                         <td><span class="badge ${statusClass}">${isLiq ? 'Thanh lý - QĐ 2246' : (seal.status || 'Sẵn sàng')}</span></td>
                         <td style="color: var(--text-muted); font-family: var(--font-mono); font-weight: 700;">${seal.year || '-'}</td>
